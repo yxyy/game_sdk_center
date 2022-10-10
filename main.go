@@ -7,6 +7,8 @@ import (
 
 func main() {
 
+	//confs.InitConf()
+
 	fmt.Println(lib.MysqlDb)
 
 	fmt.Println(lib.Mysql("CENTER"))

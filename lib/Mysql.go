@@ -13,6 +13,7 @@ type MysqlConfig struct {
 	Port     int
 	User     string
 	Password string
+	Database string
 }
 
 func init() {
@@ -29,11 +30,12 @@ func getDsn() string {
 		Port:     3306,
 		User:     "root",
 		Password: "root",
+		Database: "game_center",
 	}
 
 	return fmt.Sprintf(
-		"%s:%s@tcp(%s:%d)/dbname?charset=utf8mb4&parseTime=True&loc=Local",
-		config.User, config.Password, config.Host, config.Port,
+		"%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		config.User, config.Password, config.Host, config.Port, config.Database,
 	)
 }
 
