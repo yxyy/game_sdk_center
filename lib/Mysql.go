@@ -32,8 +32,8 @@ func getDsn() string {
 	}
 
 	return fmt.Sprintf(
-		"%s:%s@tcp(%s:%s)/dbname?charset=utf8mb4&parseTime=True&loc=Local",
-		config.User, config.Password, config.Host, &config,
+		"%s:%s@tcp(%s:%d)/dbname?charset=utf8mb4&parseTime=True&loc=Local",
+		config.User, config.Password, config.Host, config.Port,
 	)
 }
 
