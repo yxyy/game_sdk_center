@@ -7,5 +7,7 @@ import (
 
 func main() {
 
-	fmt.Println(lib.Mysql)
+	fmt.Println(lib.MysqlDb)
+
+	fmt.Println(lib.Mysql("CENTER"))
 }

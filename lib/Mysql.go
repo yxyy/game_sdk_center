@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var Mysql *gorm.DB
+var MysqlDb *gorm.DB
 
 type MysqlConfig struct {
 	Host     string
@@ -17,7 +17,7 @@ type MysqlConfig struct {
 
 func init() {
 	var err error
-	Mysql, err = gorm.Open(mysql.Open(getDsn()), &gorm.Config{})
+	MysqlDb, err = gorm.Open(mysql.Open(getDsn()), &gorm.Config{})
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -35,4 +35,15 @@ func getDsn() string {
 		"%s:%s@tcp(%s:%s)/dbname?charset=utf8mb4&parseTime=True&loc=Local",
 		config.User, config.Password, config.Host, &config,
 	)
+}
+
+func Mysql(config string) *gorm.DB {
+	if config == "" {
+		config = "default"
+	}
+	db, err := gorm.Open(mysql.Open(getDsn()), &gorm.Config{})
+	if err != nil {
+		fmt.Println(err)
+	}
+	return db
 }
