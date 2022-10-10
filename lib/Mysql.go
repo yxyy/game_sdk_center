@@ -37,6 +37,7 @@ func getDsn() string {
 	)
 }
 
+// Mysql TODO 根据配置不同选择不同实例
 func Mysql(config string) *gorm.DB {
 	if config == "" {
 		config = "default"
