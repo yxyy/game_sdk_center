@@ -19,21 +19,22 @@ type MysqlConfig struct {
 	Database string
 }
 
-func init() {
-	var err error
+func InitMysql() (err error) {
 	MysqlDb, err = gorm.Open(mysql.Open(getDsnConfig("")), &gorm.Config{})
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
+
+	return nil
 }
 
 func getDsn() string {
 	var config = MysqlConfig{
-		Host:     "127.0.0.1",
-		Port:     3306,
-		User:     "root",
-		Password: "root",
-		Database: "game_sdk_center",
+		Host:     viper.GetString("mysql.master.host"),
+		Port:     viper.GetInt("mysql.master.port"),
+		User:     viper.GetString("mysql.master.user"),
+		Password: viper.GetString("mysql.master.password"),
+		Database: viper.GetString("mysql.master.database"),
 	}
 
 	return fmt.Sprintf(
