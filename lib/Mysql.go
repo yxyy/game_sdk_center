@@ -20,7 +20,7 @@ type MysqlConfig struct {
 }
 
 func InitMysql() (err error) {
-	MysqlDb, err = gorm.Open(mysql.Open(getDsnConfig("")), &gorm.Config{})
+	MysqlDb, err = gorm.Open(mysql.Open(getDsn()), &gorm.Config{})
 	if err != nil {
 		return err
 	}
