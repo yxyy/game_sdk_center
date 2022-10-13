@@ -1,6 +1,9 @@
 package router
 
 import (
+	"game.sdk.center/internal/controller/system"
+	"game.sdk.center/internal/controller/system/group"
+	"game.sdk.center/internal/middleware"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -9,9 +12,9 @@ func InitRouter() *gin.Engine {
 
 	r := gin.Default()
 
-	r.POST("/login", func(context *gin.Context) {
+	r.Use(middleware.Log())
 
-	})
+	r.POST("/login", system.Login)
 
 	r.GET("/home", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
@@ -19,6 +22,8 @@ func InitRouter() *gin.Engine {
 			"message": "6666",
 		})
 	})
+
+	r.POST("/system/group", group.Add)
 
 	return r
 }
