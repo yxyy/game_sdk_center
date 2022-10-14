@@ -11,9 +11,9 @@ func Uuid() string {
 
 }
 
-func Range() {
+func Range() int {
 
 	rand.Seed(time.Now().UnixNano())
 
-	rand.Int()
+	return rand.Intn(9999) + 1000
 }
