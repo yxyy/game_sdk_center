@@ -9,10 +9,31 @@ import (
 func InitLogs() {
 
 	// 设置格式
-	log.SetFormatter(&log.TextFormatter{})
+	log.SetFormatter(&log.TextFormatter{
+		ForceColors:               false,
+		DisableColors:             true,
+		ForceQuote:                false,
+		DisableQuote:              false,
+		EnvironmentOverrideColors: false,
+		DisableTimestamp:          false,
+		FullTimestamp:             false,
+		TimestampFormat:           "",
+		DisableSorting:            false,
+		SortingFunc:               nil,
+		DisableLevelTruncation:    false,
+		PadLevelText:              false,
+		QuoteEmptyFields:          true,
+		FieldMap:                  nil,
+		CallerPrettyfier:          nil,
+	})
+
+	fp, err := os.OpenFile("./storage/log/request.log", os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
 	// 	设置输出位置
-	log.SetOutput(os.Stdout)
+	log.SetOutput(fp)
 	//  设置日志等级
-	log.SetLevel(log.WarnLevel)
+	log.SetLevel(log.InfoLevel)
 
 }
