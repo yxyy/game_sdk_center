@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"io"
+	"time"
 )
 
 type User struct {
@@ -15,7 +16,10 @@ type User struct {
 
 func Log() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
+		fmt.Println("------------------")
+		fmt.Println(time.Now().UnixNano())
+		fmt.Println(time.Now().UnixNano() / 1000000)
+		fmt.Println("------------------")
 		var body []byte
 		var err error
 		logger := log.

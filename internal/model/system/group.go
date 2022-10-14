@@ -2,7 +2,7 @@ package system
 
 import (
 	"errors"
-	"game.sdk.center/lib"
+	"game.sdk.center/tool"
 	"gorm.io/gorm"
 )
 
@@ -20,7 +20,7 @@ func (this *Group) Add() error {
 		return errors.New("名称不能为空")
 	}
 
-	if err := lib.MysqlDb.Model(this).Create(this).Error; err != nil {
+	if err := tool.MysqlDb.Model(this).Create(this).Error; err != nil {
 		return err
 	}
 

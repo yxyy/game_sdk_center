@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"game.sdk.center/confs"
-	"game.sdk.center/lib"
 	"game.sdk.center/logs"
 	"game.sdk.center/router"
+	"game.sdk.center/tool"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 		panic(fmt.Errorf("配置初始失败： %w", err))
 	}
 
-	if err := lib.InitMysql(); err != nil {
+	if err := tool.InitMysql(); err != nil {
 		panic(fmt.Errorf("配置初始失败： %w", err))
 	}
 
