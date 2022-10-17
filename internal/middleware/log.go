@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"game.sdk.center/tool"
@@ -14,49 +15,52 @@ type User struct {
 	Name string `json:"name"`
 }
 
-func Log() gin.HandlerFunc {
-	return func(c *gin.Context) {
+func Log(c *gin.Context) {
 
-		var err error
-		var body []byte
+	var err error
+	var body []byte
 
-		uuid := tool.Uuid()
+	uuid := tool.Uuid()
 
-		c.Set("request_id", uuid)
+	c.Set("request_id", uuid)
 
-		logger := log.
-			WithField("request_id", uuid).
-			WithField("ip", c.ClientIP()).
-			WithField("method", c.Request.Method).
-			WithField("url", fmt.Sprint(c.Request.URL)).
-			WithField("Access-Token", c.Request.Header.Get("Access-Token"))
+	logger := log.
+		WithField("request_id", uuid).
+		WithField("ip", c.ClientIP()).
+		WithField("method", c.Request.Method).
+		WithField("url", fmt.Sprint(c.Request.URL)).
+		WithField("Access-Token", c.Request.Header.Get("Access-Token"))
 
-		if c.Request.Method == "POST" {
+	if c.Request.Method == "POST" {
 
-			logger.WithField("ContentType", c.ContentType())
+		logger.WithField("ContentType", c.ContentType())
 
-			switch c.ContentType() {
-			case "application/x-www-form-urlencoded":
-				if err := c.Request.ParseForm(); err != nil {
-					logger.Error(err)
-					return
-				}
-				body, err = json.Marshal(c.Request.Form)
-				if err != nil {
-					logger.Error(err)
-					return
-				}
-
-			case "application/json":
-				body, err = io.ReadAll(c.Request.Body)
-				if err != nil {
-					logger.Error(err)
-					return
-				}
+		switch c.ContentType() {
+		case "application/x-www-form-urlencoded":
+			if err := c.Request.ParseForm(); err != nil {
+				logger.Error(err)
+				return
 			}
+			body, err = json.Marshal(c.Request.Form)
+			if err != nil {
+				logger.Error(err)
+				return
+			}
+
+		case "application/json":
+			body, err = io.ReadAll(c.Request.Body)
+			if err != nil {
+				logger.Error(err)
+				return
+			}
+			// 重写回去
+			c.Request.Body = io.NopCloser(bytes.NewReader(body))
+
 		}
-
-		logger.Info(string(body))
-
 	}
+
+	logger.Info(string(body))
+
+	c.Next()
+
 }
