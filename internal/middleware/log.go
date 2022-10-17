@@ -37,7 +37,7 @@ func Log(c *gin.Context) {
 
 		switch c.ContentType() {
 		case "application/x-www-form-urlencoded":
-			if err := c.Request.ParseForm(); err != nil {
+			if err = c.Request.ParseForm(); err != nil {
 				logger.Error(err)
 				return
 			}
