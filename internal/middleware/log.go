@@ -3,10 +3,10 @@ package middleware
 import (
 	"encoding/json"
 	"fmt"
+	"game.sdk.center/tool"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"io"
-	"time"
 )
 
 type User struct {
@@ -16,13 +16,16 @@ type User struct {
 
 func Log() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		fmt.Println("------------------")
-		fmt.Println(time.Now().UnixNano())
-		fmt.Println(time.Now().UnixNano() / 1000000)
-		fmt.Println("------------------")
-		var body []byte
+
 		var err error
+		var body []byte
+
+		uuid := tool.Uuid()
+
+		c.Set("request_id", uuid)
+
 		logger := log.
+			WithField("request_id", uuid).
 			WithField("ip", c.ClientIP()).
 			WithField("method", c.Request.Method).
 			WithField("url", fmt.Sprint(c.Request.URL)).
@@ -35,22 +38,25 @@ func Log() gin.HandlerFunc {
 			switch c.ContentType() {
 			case "application/x-www-form-urlencoded":
 				if err := c.Request.ParseForm(); err != nil {
-					log.Fatal(err)
+					logger.Error(err)
+					return
 				}
 				body, err = json.Marshal(c.Request.Form)
 				if err != nil {
-					log.Fatal(err)
+					logger.Error(err)
+					return
 				}
 
 			case "application/json":
 				body, err = io.ReadAll(c.Request.Body)
 				if err != nil {
-					log.Fatal(err)
+					logger.Error(err)
+					return
 				}
 			}
 		}
 
-		logger.Info(string(body), "第二个参数")
+		logger.Info(string(body))
 
 	}
 }
