@@ -57,9 +57,11 @@ func Log(c *gin.Context) {
 			c.Request.Body = io.NopCloser(bytes.NewReader(body))
 
 		}
+
+		logger.WithField("body", string(body))
 	}
 
-	logger.Info(string(body))
+	logger.Info("请求日志")
 
 	c.Next()
 
