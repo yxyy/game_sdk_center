@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 var MysqlDb *gorm.DB
@@ -20,7 +21,15 @@ type MysqlConfig struct {
 }
 
 func InitMysql() (err error) {
-	MysqlDb, err = gorm.Open(mysql.Open(getDsn()), &gorm.Config{})
+	MysqlDb, err = gorm.Open(mysql.Open(getDsn()), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			TablePrefix:   "lhc_",
+			SingularTable: false,
+			NameReplacer:  nil,
+			NoLowerCase:   false,
+		},
+		// Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		return err
 	}
