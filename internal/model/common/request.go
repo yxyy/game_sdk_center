@@ -7,7 +7,16 @@ type Params struct {
 
 func NewParams() *Params {
 	return &Params{
-		Page:  0,
+		Page:  1,
 		Limit: 10,
+	}
+}
+
+func (p *Params) Check() {
+	if p.Page <= 0 {
+		p.Page = 1
+	}
+	if p.Limit <= 0 {
+		p.Limit = 10
 	}
 }

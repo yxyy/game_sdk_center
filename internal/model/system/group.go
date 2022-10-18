@@ -54,7 +54,7 @@ func (g *Group) Update() error {
 }
 
 func (g *Group) List(params *common.Params) (grous []*Group, err error) {
-
+	params.Check()
 	if err = tool.MysqlDb.Model(g).Offset((params.Page - 1) * params.Limit).Limit(params.Limit).Find(&grous).Error; err != nil {
 		return
 	}
