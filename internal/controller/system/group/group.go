@@ -9,56 +9,56 @@ import (
 func Add(c *gin.Context) {
 
 	group := system.NewGroup()
-	result := common.NewResult(c)
+	response := common.NewResponse(c)
 
 	if err := c.ShouldBind(&group); err != nil {
-		result.Fail("参数格式错误，请检查")
+		response.Fail("参数格式错误，请检查")
 		return
 	}
 
 	if err := group.Add(); err != nil {
-		result.Error(err)
+		response.Error(err)
 		return
 	}
 
-	result.Success()
+	response.Success()
 }
 
 func Update(c *gin.Context) {
 
 	group := system.NewGroup()
-	result := common.NewResult(c)
+	response := common.NewResponse(c)
 
 	if err := c.ShouldBind(&group); err != nil {
-		result.Fail("参数格式错误，请检查")
+		response.Fail("参数格式错误，请检查")
 		return
 	}
 
 	if err := group.Update(); err != nil {
-		result.Error(err)
+		response.Error(err)
 		return
 	}
 
-	result.Success()
+	response.Success()
 }
 
 func List(c *gin.Context) {
 	group := system.NewGroup()
-	result := common.NewResult(c)
+	response := common.NewResponse(c)
 	params := common.NewParams()
 	if err := c.ShouldBind(group); err != nil {
-		result.Error(err)
+		response.Error(err)
 		return
 	}
 	if err := c.ShouldBind(params); err != nil {
-		result.Error(err)
+		response.Error(err)
 		return
 	}
 	grous, err := group.List(params)
 	if err != nil {
-		result.Error(err)
+		response.Error(err)
 		return
 	}
 
-	result.SuccessData(grous)
+	response.SuccessData(grous)
 }

@@ -9,31 +9,31 @@ import (
 func Add(c *gin.Context) {
 
 	menu := system.NewMenu()
-	result := common.NewResult(c)
+	response := common.NewResponse(c)
 
 	if err := c.ShouldBind(&menu); err != nil {
-		result.Error(err)
+		response.Error(err)
 	}
 
 	if err := menu.Add(); err != nil {
-		result.Error(err)
+		response.Error(err)
 	}
 
-	result.Success()
+	response.Success()
 }
 
 func Update(c *gin.Context) {
 
 	menu := system.NewMenu()
-	result := common.NewResult(c)
+	response := common.NewResponse(c)
 
 	if err := c.ShouldBind(&menu); err != nil {
-		result.Error(err)
+		response.Error(err)
 	}
 
 	if err := menu.Update(); err != nil {
-		result.Error(err)
+		response.Error(err)
 	}
 
-	result.Success()
+	response.Success()
 }

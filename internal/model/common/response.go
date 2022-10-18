@@ -6,23 +6,23 @@ import (
 	"net/http"
 )
 
-type Response struct {
+type Result struct {
 	Code      int         `json:"code"`
 	Message   string      `json:"message"`
 	Data      interface{} `json:"data,omitempty"`
 	RequestId string      `json:"request_id"`
 }
 
-type Result struct {
+type Response struct {
 	Ctx *gin.Context
 }
 
-func NewResult(ctx *gin.Context) *Result {
-	return &Result{Ctx: ctx}
+func NewResponse(ctx *gin.Context) *Response {
+	return &Response{Ctx: ctx}
 }
 
-func NewResponse() *Response {
-	return &Response{
+func NewResult() *Result {
+	return &Result{
 		Code:      20000,
 		Message:   "SUCCESS",
 		Data:      nil,
@@ -30,56 +30,56 @@ func NewResponse() *Response {
 	}
 }
 
-func (r *Result) Success() {
-	response := NewResponse()
-	response.Code = 20000
-	response.Message = "SUCCESS"
-	response.RequestId = r.Ctx.GetString("request_id")
-	r.Ctx.JSON(http.StatusOK, response)
+func (r *Response) Success() {
+	result := NewResult()
+	result.Code = 20000
+	result.Message = "SUCCESS"
+	result.RequestId = r.Ctx.GetString("request_id")
+	r.Ctx.JSON(http.StatusOK, result)
 }
 
-func (r *Result) SuccessData(data interface{}) {
-	response := NewResponse()
-	response.Code = 20000
-	response.Message = "SUCCESS"
-	response.Data = data
-	response.RequestId = r.Ctx.GetString("request_id")
-	log.WithField("request_id", response.RequestId).Info(response.Data)
-	r.Ctx.JSON(http.StatusOK, response)
+func (r *Response) SuccessData(data interface{}) {
+	result := NewResult()
+	result.Code = 20000
+	result.Message = "SUCCESS"
+	result.Data = data
+	result.RequestId = r.Ctx.GetString("request_id")
+	log.WithField("request_id", result.RequestId).Info(result.Data)
+	r.Ctx.JSON(http.StatusOK, result)
 }
 
-func (r *Result) Fail(message string) {
-	response := NewResponse()
-	response.Code = 40000
-	response.Message = message
-	if response.Message == "" {
-		response.Message = "fail"
+func (r *Response) Fail(message string) {
+	result := NewResult()
+	result.Code = 40000
+	result.Message = message
+	if result.Message == "" {
+		result.Message = "fail"
 	}
-	response.RequestId = r.Ctx.GetString("request_id")
-	log.WithField("request_id", response.RequestId).Error(response.Message)
-	r.Ctx.JSON(http.StatusOK, response)
+	result.RequestId = r.Ctx.GetString("request_id")
+	log.WithField("request_id", result.RequestId).Error(result.Message)
+	r.Ctx.JSON(http.StatusOK, result)
 }
 
-func (r *Result) Error(message error) {
-	response := NewResponse()
-	response.Code = 40000
-	response.Message = message.Error()
-	response.RequestId = r.Ctx.GetString("request_id")
-	log.WithField("request_id", response.RequestId).Error(response.Message)
-	r.Ctx.JSON(http.StatusOK, response)
+func (r *Response) Error(message error) {
+	result := NewResult()
+	result.Code = 40000
+	result.Message = message.Error()
+	result.RequestId = r.Ctx.GetString("request_id")
+	log.WithField("request_id", result.RequestId).Error(result.Message)
+	r.Ctx.JSON(http.StatusOK, result)
 }
 
-func (r *Result) SetResult(code int, message string, data interface{}) {
-	var response = &Response{
+func (r *Response) SetResult(code int, message string, data interface{}) {
+	var result = &Result{
 		Code:      code,
 		Message:   message,
 		Data:      data,
 		RequestId: r.Ctx.GetString("request_id"),
 	}
-	r.send(response)
+	r.send(result)
 }
 
-func (r *Result) send(response *Response) {
-	log.WithField("request_id", response.RequestId).Error(response.Message)
-	r.Ctx.JSON(http.StatusOK, response)
+func (r *Response) send(result *Result) {
+	log.WithField("request_id", result.RequestId).Error(result.Message)
+	r.Ctx.JSON(http.StatusOK, result)
 }
