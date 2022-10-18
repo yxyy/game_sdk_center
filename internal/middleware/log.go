@@ -33,6 +33,7 @@ func Log(c *gin.Context) {
 
 	if c.Request.Method == "POST" {
 
+		// TODO ContentType 和 body 无法添加，以后研究
 		logger.WithField("ContentType", c.ContentType())
 
 		switch c.ContentType() {

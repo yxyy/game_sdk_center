@@ -1,19 +1,19 @@
 mysql:
   master:
-    host: 192.168.100.24
+    host: lhc.com
     port: 3306
     user: root
     password: root
     database: game_sdk_center
   slaver:
-    host: 192.168.100.24
+    host: lhc.com
     port: 3307
     user: root
     password: root
     database: game_center
 
 redis:
-  host: 192.168.100.24
+  host: lhc.com
   port: 6379
   user: root
   password: root
