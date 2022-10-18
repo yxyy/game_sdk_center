@@ -44,7 +44,9 @@ func (r *Response) SuccessData(data interface{}) {
 	result.Message = "SUCCESS"
 	result.Data = data
 	result.RequestId = r.Ctx.GetString("request_id")
-	log.WithField("request_id", result.RequestId).Info(result.Data)
+	go func() {
+		log.WithField("request_id", result.RequestId).Info(result.Data)
+	}()
 	r.Ctx.JSON(http.StatusOK, result)
 }
 
@@ -56,7 +58,9 @@ func (r *Response) Fail(message string) {
 		result.Message = "fail"
 	}
 	result.RequestId = r.Ctx.GetString("request_id")
-	log.WithField("request_id", result.RequestId).Error(result.Message)
+	go func() {
+		log.WithField("request_id", result.RequestId).Error(result.Message)
+	}()
 	r.Ctx.JSON(http.StatusOK, result)
 }
 
@@ -65,7 +69,9 @@ func (r *Response) Error(message error) {
 	result.Code = 40000
 	result.Message = message.Error()
 	result.RequestId = r.Ctx.GetString("request_id")
-	log.WithField("request_id", result.RequestId).Error(result.Message)
+	go func() {
+		log.WithField("request_id", result.RequestId).Error(result.Message)
+	}()
 	r.Ctx.JSON(http.StatusOK, result)
 }
 
@@ -80,6 +86,8 @@ func (r *Response) SetResult(code int, message string, data interface{}) {
 }
 
 func (r *Response) Send(result *Result) {
-	log.WithField("request_id", result.RequestId).Error(result.Message)
+	go func() {
+		log.WithField("request_id", result.RequestId).Error(result.Message)
+	}()
 	r.Ctx.JSON(http.StatusOK, result)
 }
