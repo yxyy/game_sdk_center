@@ -76,10 +76,10 @@ func (r *Response) SetResult(code int, message string, data interface{}) {
 		Data:      data,
 		RequestId: r.Ctx.GetString("request_id"),
 	}
-	r.send(result)
+	r.Send(result)
 }
 
-func (r *Response) send(result *Result) {
+func (r *Response) Send(result *Result) {
 	log.WithField("request_id", result.RequestId).Error(result.Message)
 	r.Ctx.JSON(http.StatusOK, result)
 }
