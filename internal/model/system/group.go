@@ -42,13 +42,22 @@ func (g *Group) Add() error {
 
 func (g *Group) Update() error {
 
-	if g.ID == 0 {
+	if g.Id <= 0 {
 		return errors.New("id 无效")
 	}
 
-	if err := tool.MysqlDb.Model(g).Where("id", g.ID).Updates(g).Error; err != nil {
+	if err := tool.MysqlDb.Model(g).Where("id", g.Id).Updates(g).Error; err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (g *Group) List(params *common.Params) (grous []*Group, err error) {
+
+	if err = tool.MysqlDb.Model(g).Offset((params.Page - 1) * params.Limit).Limit(params.Limit).Find(&grous).Error; err != nil {
+		return
+	}
+
+	return
 }

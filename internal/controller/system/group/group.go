@@ -41,3 +41,24 @@ func Update(c *gin.Context) {
 
 	result.Success()
 }
+
+func List(c *gin.Context) {
+	group := system.NewGroup()
+	result := common.NewResult(c)
+	params := common.NewParams()
+	if err := c.ShouldBind(group); err != nil {
+		result.Error(err)
+		return
+	}
+	if err := c.ShouldBind(params); err != nil {
+		result.Error(err)
+		return
+	}
+	grous, err := group.List(params)
+	if err != nil {
+		result.Error(err)
+		return
+	}
+
+	result.SuccessData(grous)
+}
