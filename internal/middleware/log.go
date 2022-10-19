@@ -62,15 +62,19 @@ func Log(c *gin.Context) {
 	}
 
 	go func() {
-		logger := log.
-			WithField("request_id", uuid).
-			WithField("ip", c.ClientIP()).
-			WithField("method", c.Request.Method).
-			WithField("url", fmt.Sprint(c.Request.URL)).
-			WithField("Access-Token", c.Request.Header.Get("Access-Token"))
+		logger := log.WithFields(log.Fields{
+			"request_id":   uuid,
+			"ip":           c.ClientIP(),
+			"method":       c.Request.Method,
+			"url":          fmt.Sprint(c.Request.URL),
+			"Access-Token": c.Request.Header.Get("Access-Token"),
+		})
 
 		if c.Request.Method == "POST" {
-			logger = logger.WithField("ContentType", c.ContentType()).WithField("body", string(body))
+			logger = logger.WithFields(log.Fields{
+				"ContentType": c.ContentType(),
+				"body":        string(body),
+			})
 		}
 		logger.Info("请求日志")
 	}()
