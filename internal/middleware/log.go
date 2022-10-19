@@ -24,34 +24,33 @@ func Log(c *gin.Context) {
 
 	c.Set("request_id", uuid)
 
-	logger := log.
-		WithField("request_id", uuid).
-		WithField("ip", c.ClientIP()).
-		WithField("method", c.Request.Method).
-		WithField("url", fmt.Sprint(c.Request.URL)).
-		WithField("Access-Token", c.Request.Header.Get("Access-Token"))
+	// logger := log.New()
+	// WithField("request_id", uuid).
+	// WithField("ip", c.ClientIP()).
+	// WithField("method", c.Request.Method).
+	// WithField("url", fmt.Sprint(c.Request.URL)).
+	// WithField("Access-Token", c.Request.Header.Get("Access-Token"))
 
 	if c.Request.Method == "POST" {
 
-		// TODO ContentType 和 body 无法添加，以后研究,迁移线程写
-		logger.WithField("ContentType", c.ContentType())
+		// logger = logger.WithField("ContentType", c.ContentType())
 
 		switch c.ContentType() {
 		case "application/x-www-form-urlencoded":
 			if err = c.Request.ParseForm(); err != nil {
-				logger.Error(err)
+				log.Error(err)
 				return
 			}
 			body, err = json.Marshal(c.Request.Form)
 			if err != nil {
-				logger.Error(err)
+				log.Error(err)
 				return
 			}
 
 		case "application/json":
 			body, err = io.ReadAll(c.Request.Body)
 			if err != nil {
-				logger.Error(err)
+				log.Error(err)
 				return
 			}
 			// 重写回去
@@ -59,10 +58,22 @@ func Log(c *gin.Context) {
 
 		}
 
-		logger.WithField("body", string(body))
+		// logger = logger.WithField("body", string(body))
 	}
 
-	logger.Info("请求日志")
+	go func() {
+		logger := log.
+			WithField("request_id", uuid).
+			WithField("ip", c.ClientIP()).
+			WithField("method", c.Request.Method).
+			WithField("url", fmt.Sprint(c.Request.URL)).
+			WithField("Access-Token", c.Request.Header.Get("Access-Token"))
+
+		if c.Request.Method == "POST" {
+			logger = logger.WithField("ContentType", c.ContentType()).WithField("body", string(body))
+		}
+		logger.Info("请求日志")
+	}()
 
 	c.Next()
 
