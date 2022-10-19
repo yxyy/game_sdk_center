@@ -32,16 +32,12 @@ func NewResult() *Result {
 
 func (r *Response) Success() {
 	result := NewResult()
-	result.Code = 20000
-	result.Message = "SUCCESS"
 	result.RequestId = r.Ctx.GetString("request_id")
 	r.Ctx.JSON(http.StatusOK, result)
 }
 
 func (r *Response) SuccessData(data interface{}) {
 	result := NewResult()
-	result.Code = 20000
-	result.Message = "SUCCESS"
 	result.Data = data
 	result.RequestId = r.Ctx.GetString("request_id")
 	go func() {
