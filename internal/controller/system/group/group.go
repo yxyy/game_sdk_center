@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Add(c *gin.Context) {
+func Create(c *gin.Context) {
 
 	group := system.NewGroup()
 	response := common.NewResponse(c)
@@ -16,7 +16,7 @@ func Add(c *gin.Context) {
 		return
 	}
 
-	if err := group.Add(); err != nil {
+	if err := group.Create(); err != nil {
 		response.Error(err)
 		return
 	}

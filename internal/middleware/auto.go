@@ -8,8 +8,11 @@ import (
 )
 
 func Auto(c *gin.Context) {
-	err := tool.MysqlDb.AutoMigrate(&system.Group{})
-	if err != nil {
+	if err := tool.MysqlDb.AutoMigrate(
+		&system.User{},
+		&system.Group{},
+		&system.Menu{},
+	); err != nil {
 		fmt.Println(err)
 	}
 	c.Next()

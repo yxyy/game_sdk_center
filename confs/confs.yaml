@@ -1,13 +1,13 @@
 mysql:
   master:
     host: lhc.com
-    port: 3306
+    port: 3307
     user: root
     password: root
     database: game_sdk_center
   slaver:
     host: lhc.com
-    port: 3307
+    port: 3306
     user: root
     password: root
     database: game_center

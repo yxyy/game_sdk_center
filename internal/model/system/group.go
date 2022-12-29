@@ -16,7 +16,7 @@ func NewGroup() *Group {
 	return &Group{}
 }
 
-func (g *Group) Add() error {
+func (g *Group) Create() error {
 	if g.Name == "" {
 		return errors.New("名称不能为空")
 	}

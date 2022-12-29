@@ -32,7 +32,7 @@ func InitLogs() {
 		panic(err)
 	}
 
-	defer fp.Close()
+	// defer fp.Close()
 	// 	设置输出位置
 	log.SetOutput(fp)
 	//  设置日志等级

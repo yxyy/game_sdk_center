@@ -12,7 +12,8 @@ func InitRouter() *gin.Engine {
 
 	r := gin.Default()
 
-	r.Use(middleware.Log, middleware.Auto)
+	r.Use(middleware.Log)
+	// r.Use(middleware.Auto)
 
 	r.POST("/login", system.Login)
 

@@ -58,6 +58,7 @@ func (r *Response) Fail(message string) {
 		log.WithField("request_id", result.RequestId).Error(result.Message)
 	}()
 	r.Ctx.JSON(http.StatusOK, result)
+	panic(message)
 }
 
 func (r *Response) Error(message error) {
@@ -69,6 +70,7 @@ func (r *Response) Error(message error) {
 		log.WithField("request_id", result.RequestId).Error(result.Message)
 	}()
 	r.Ctx.JSON(http.StatusOK, result)
+	panic(message)
 }
 
 func (r *Response) SetResult(code int, message string, data interface{}) {
