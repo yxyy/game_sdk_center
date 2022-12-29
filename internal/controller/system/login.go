@@ -8,23 +8,23 @@ import (
 
 func Login(c *gin.Context) {
 
-	login := system.NewLoginParams()
+	params := system.NewLoginParams()
 	response := common.NewResponse(c)
 
-	if err := c.ShouldBind(&login); err != nil {
+	if err := c.ShouldBind(&params); err != nil {
 		response.Error(err)
 	}
 
-	var loginer system.Loginer
-	if login.Phone >= 0 {
+	var login system.Loginer
+	if params.Phone >= 0 {
 		// 手机登录
-		loginer = system.NewMobile()
+		login = system.NewMobile()
 	} else {
 		// 账号登录
-		loginer = system.NewAccount()
+		login = system.NewAccount()
 	}
 
-	if err := system.Login(loginer); err != nil {
+	if err := system.Login(login); err != nil {
 		response.Error(err)
 	}
 
