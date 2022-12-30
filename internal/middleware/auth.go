@@ -7,6 +7,8 @@ import (
 	"game.sdk.center/internal/model/system"
 	"game.sdk.center/tool"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
+	"time"
 )
 
 func Auth(c *gin.Context) {
@@ -29,6 +31,18 @@ func Auth(c *gin.Context) {
 		response.SetResult(5000, err.Error(), nil)
 		c.Abort()
 		return
+	}
+
+	if err = tool.RedisClient.Expire(context.Background(), accessToken, time.Second*2*360).Err(); err != nil {
+		log.WithField("request_id", c.GetString("request_id")).
+			WithField("key", accessToken).
+			WithField("message", "更新tokenInfo key失败").Error(err)
+	}
+
+	if err = tool.RedisClient.Expire(context.Background(), "access_token"+user.Account, time.Second*2*360).Err(); err != nil {
+		log.WithField("request_id", c.GetString("request_id")).
+			WithField("key", accessToken).
+			WithField("message", "更新access_token key失败").Error(err)
 	}
 
 	c.Set("userInfo", user)
