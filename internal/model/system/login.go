@@ -11,7 +11,6 @@ import (
 type Loginer interface {
 	check() error
 	login() (User, error)
-	logout() error
 }
 
 type LoginParams struct {
@@ -33,17 +32,6 @@ func Login(l Loginer) (user User, err error) {
 		return
 	}
 	return
-}
-
-// Logout 注销登录
-func Logout(l Loginer) error {
-	if err := l.check(); err != nil {
-		return err
-	}
-	if err := l.logout(); err != nil {
-		return err
-	}
-	return nil
 }
 
 // Account 账号登录
@@ -83,10 +71,6 @@ func (a *Account) login() (user User, err error) {
 	return
 }
 
-func (a *Account) logout() error {
-	return nil
-}
-
 // Mobile 手机登录
 type Mobile struct {
 	Phone int `json:"phone" form:"phone" gorm:"phone"`
@@ -113,8 +97,4 @@ func (m *Mobile) login() (user User, err error) {
 	}
 
 	return
-}
-
-func (m *Mobile) logout() error {
-	return nil
 }
