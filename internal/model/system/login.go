@@ -1,18 +1,22 @@
 package system
 
 import (
+	"crypto/md5"
 	"errors"
+	"fmt"
+	"game.sdk.center/tool"
+	"gorm.io/gorm"
 )
 
 type Loginer interface {
 	check() error
-	login() error
+	login() (User, error)
 	logout() error
 }
 
 type LoginParams struct {
-	Account
-	Mobile
+	*Account
+	*Mobile
 }
 
 func NewLoginParams() *LoginParams {
@@ -20,14 +24,15 @@ func NewLoginParams() *LoginParams {
 }
 
 // Login 登录控制
-func Login(l Loginer) error {
-	if err := l.check(); err != nil {
-		return err
+func Login(l Loginer) (user User, err error) {
+	if err = l.check(); err != nil {
+		return
 	}
-	if err := l.login(); err != nil {
-		return err
+	user, err = l.login()
+	if err != nil {
+		return
 	}
-	return nil
+	return
 }
 
 // Logout 注销登录
@@ -35,7 +40,7 @@ func Logout(l Loginer) error {
 	if err := l.check(); err != nil {
 		return err
 	}
-	if err := l.login(); err != nil {
+	if err := l.logout(); err != nil {
 		return err
 	}
 	return nil
@@ -56,14 +61,26 @@ func (a *Account) check() error {
 		return errors.New("账号不能为空")
 	}
 	if a.Password == "" {
-		return errors.New("账号不能为空")
+		return errors.New("密码不能为空")
 	}
 
 	return nil
 }
 
-func (a *Account) login() error {
-	return nil
+func (a *Account) login() (user User, err error) {
+	if err = tool.MysqlDb.Model(&user).Where("account", a.Account).First(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return user, errors.New("账号不存在")
+		}
+		return user, err
+	}
+
+	a.Password = fmt.Sprintf("%x", md5.Sum([]byte(a.Password+user.Salt)))
+	if a.Password != user.Password {
+		return user, errors.New("密码错误")
+	}
+
+	return
 }
 
 func (a *Account) logout() error {
@@ -90,12 +107,12 @@ func (m *Mobile) check() error {
 	return nil
 }
 
-func (m *Mobile) login() error {
+func (m *Mobile) login() (user User, err error) {
 	if m.Phone <= 0 {
-		return errors.New("手机号不能为空")
+		return user, errors.New("手机号不能为空")
 	}
 
-	return nil
+	return
 }
 
 func (m *Mobile) logout() error {

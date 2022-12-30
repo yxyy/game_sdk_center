@@ -16,17 +16,30 @@ func Login(c *gin.Context) {
 	}
 
 	var login system.Loginer
-	if params.Phone >= 0 {
+	switch true {
+	case params.Mobile != nil:
 		// 手机登录
-		login = system.NewMobile()
-	} else {
+		mobile := system.NewMobile()
+		mobile = params.Mobile
+		login = mobile
+		break
+	case params.Account != nil:
 		// 账号登录
-		login = system.NewAccount()
+		account := system.NewAccount()
+		account = params.Account
+		login = account
+	default:
+		response.Fail("无效的登录方式")
 	}
 
-	if err := system.Login(login); err != nil {
+	user, err := system.Login(login)
+	if err != nil {
 		response.Error(err)
 	}
 
-	response.Success()
+	var data = make(map[string]interface{})
+	data["userInfo"] = user
+	data["token"] = "xxxx"
+
+	response.SuccessData(data)
 }
