@@ -21,7 +21,7 @@ func InitSystemRouter(r *gin.Engine) {
 		// 系统账号分组
 		system.POST("/group/create", group.Create)
 		system.POST("/group/update", group.Update)
-		system.POST("/group/list", group.List)
+		system.GET("/group/list", group.List)
 
 		// 菜单
 		system.POST("/menu/add", menu.Add)

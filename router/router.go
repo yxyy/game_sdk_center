@@ -16,6 +16,9 @@ func InitRouter() *gin.Engine {
 	// r.Use(middleware.Auto)
 
 	r.POST("/system/login", system.Login)
+	r.POST("/system/logout", system.Logout)
+
+	r.Use(middleware.Auth)
 
 	r.GET("/home", func(c *gin.Context) {
 

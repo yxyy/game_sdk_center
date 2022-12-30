@@ -73,6 +73,28 @@ func (r *Response) Error(message error) {
 	panic(message)
 }
 
+func (r *Response) SetServerError(message string) {
+	var result = &Result{
+		Code:      5000,
+		Message:   message,
+		Data:      nil,
+		RequestId: r.Ctx.GetString("request_id"),
+	}
+	r.Send(result)
+	panic(message)
+}
+
+func (r *Response) SetCodeError(code int, message string) {
+	var result = &Result{
+		Code:      code,
+		Message:   message,
+		Data:      nil,
+		RequestId: r.Ctx.GetString("request_id"),
+	}
+	r.Send(result)
+	panic(message)
+}
+
 func (r *Response) SetResult(code int, message string, data interface{}) {
 	var result = &Result{
 		Code:      code,

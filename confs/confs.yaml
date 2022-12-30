@@ -16,4 +16,5 @@ redis:
   host: lhc.com
   port: 6379
   user: root
-  password: root
+  password: 123456
+  db: 0

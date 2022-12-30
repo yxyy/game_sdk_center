@@ -23,7 +23,7 @@ type User struct {
 	Avatar        string `json:"avatar" form:"avatar" gorm:"avatar"`
 	Status        int64  `json:"status" form:"status" gorm:"status"`
 	LastLoginIp   string `json:"last_login_ip" form:"last_login_ip" gorm:"last_login_ip"`
-	LastLoginTime string `json:"last_login_time" form:"last_login_time" gorm:"last_login_time"`
+	LastLoginTime int64  `json:"last_login_time" form:"last_login_time" gorm:"last_login_time"`
 	Remarks       string `json:"remarks" form:"remarks" gorm:"remarks"`
 }
 
@@ -131,11 +131,13 @@ func (u *User) Update() error {
 		return errors.New("状态无效")
 	}
 	err := tool.MysqlDb.Model(&u).Where("id", u.Id).Updates(User{
-		Nickname: u.Nickname,
-		Status:   u.Status,
-		GroupId:  u.GroupId,
-		Avatar:   u.Avatar,
-		Remarks:  u.Remarks,
+		Nickname:      u.Nickname,
+		Status:        u.Status,
+		GroupId:       u.GroupId,
+		Avatar:        u.Avatar,
+		LastLoginIp:   u.LastLoginIp,
+		LastLoginTime: u.LastLoginTime,
+		Remarks:       u.Remarks,
 	}).Error
 	if err != nil {
 		return err
