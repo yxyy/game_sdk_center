@@ -18,3 +18,23 @@ redis:
   user: root
   password: 123456
   db: 0
+
+redisPoll:
+  - mater:
+      host: lhc.com
+      port: 6379
+      user: root
+      password: 123456
+      db: 0
+  - slave:
+      host: lhc.com
+      port: 6379
+      user: root
+      password: 123456
+      db: 1
+  - other:
+      host: lhc.com
+      port: 6379
+      user: root
+      password: 123456
+      db: 2
