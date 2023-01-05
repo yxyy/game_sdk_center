@@ -33,18 +33,20 @@ func Auth(c *gin.Context) {
 		return
 	}
 
-	if err = tool.RedisClient.Expire(context.Background(), accessToken, time.Second*2*360).Err(); err != nil {
+	if err = tool.RedisClient.Expire(context.Background(), accessToken, time.Second*2*3600).Err(); err != nil {
 		log.WithField("request_id", c.GetString("request_id")).
 			WithField("key", accessToken).
 			WithField("message", "更新tokenInfo key失败").Error(err)
 	}
 
-	if err = tool.RedisClient.Expire(context.Background(), "access_token"+user.Account, time.Second*2*360).Err(); err != nil {
+	if err = tool.RedisClient.Expire(context.Background(), "access_token"+user.Account, time.Second*2*3600).Err(); err != nil {
 		log.WithField("request_id", c.GetString("request_id")).
-			WithField("key", accessToken).
+			WithField("key", "access_token"+user.Account).
 			WithField("message", "更新access_token key失败").Error(err)
 	}
 
+	c.Set("userId", user.Id)
+	c.Set("userAccount", user.Account)
 	c.Set("userInfo", user)
 
 	c.Next()
