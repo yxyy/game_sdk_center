@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Add(c *gin.Context) {
+func Create(c *gin.Context) {
 
 	menu := system.NewMenu()
 	response := common.NewResponse(c)
@@ -15,7 +15,7 @@ func Add(c *gin.Context) {
 		response.Error(err)
 	}
 
-	if err := menu.Add(); err != nil {
+	if err := menu.Create(); err != nil {
 		response.Error(err)
 	}
 
@@ -36,4 +36,36 @@ func Update(c *gin.Context) {
 	}
 
 	response.Success()
+}
+
+func List(c *gin.Context) {
+	menu := system.NewMenu()
+	response := common.NewResponse(c)
+	params := common.NewParams()
+	if err := c.ShouldBind(menu); err != nil {
+		response.Error(err)
+	}
+	if err := c.ShouldBind(params); err != nil {
+		response.Error(err)
+	}
+	params.Check()
+	menus, err := menu.List(params)
+	if err != nil {
+		response.Error(err)
+	}
+
+	response.SuccessData(menus)
+}
+
+func Tree(c *gin.Context) {
+
+	menu := system.NewMenu()
+	response := common.NewResponse(c)
+
+	tree, err := menu.GetTree()
+	if err != nil {
+		response.Error(err)
+	}
+
+	response.SuccessData(tree)
 }

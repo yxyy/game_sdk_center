@@ -24,8 +24,10 @@ func InitSystemRouter(r *gin.Engine) {
 		system.GET("/group/list", group.List)
 
 		// 菜单
-		system.POST("/menu/add", menu.Add)
+		system.POST("/menu/create", menu.Create)
 		system.POST("/menu/update", menu.Update)
+		system.GET("/menu/list", menu.List)
+		system.GET("/menu/tree", menu.Tree)
 	}
 
 }
