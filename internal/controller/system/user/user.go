@@ -34,11 +34,9 @@ func List(c *gin.Context) {
 func Info(c *gin.Context) {
 	user := system.NewUser()
 	response := common.NewResponse(c)
+	user.Id = c.GetInt64("userId")
 
-	if err := c.ShouldBind(user); err != nil {
-		response.Error(err)
-	}
-	data, err := user.UserInfo()
+	data, err := user.UserInfos()
 	if err != nil {
 		response.Error(err)
 	}

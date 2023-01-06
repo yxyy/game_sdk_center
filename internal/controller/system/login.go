@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"game.sdk.center/internal/model/common"
 	"game.sdk.center/internal/model/system"
 	"game.sdk.center/tool"
@@ -79,7 +78,8 @@ func Logout(c *gin.Context) {
 
 func CreateToken(user system.User) string {
 
-	return fmt.Sprintf("%d_%s_%s", user.GroupId, user.Account, tool.Salt())
+	// return fmt.Sprintf("%d_%s_%s", user.GroupId, user.Account, tool.Salt())
+	return tool.Salt()
 
 }
 
@@ -100,12 +100,14 @@ func updateToken(token string, user system.User) error {
 	if err != nil {
 		return err
 	}
-	// 缓存用户token
-	if err = tool.RedisClient.Set(context.Background(), "access_token:"+user.Account, token, time.Second*2*3600).Err(); err != nil {
+
+	// 缓存 token-user信息
+	if err = tool.RedisClient.Set(context.Background(), token, marshal, time.Second*2*3600).Err(); err != nil {
 		return err
 	}
-	// 缓存 token-user信息
-	if err = tool.RedisClient.Set(context.Background(), token, string(marshal), time.Second*2*3600).Err(); err != nil {
+
+	// 缓存用户token
+	if err = tool.RedisClient.Set(context.Background(), "access_token:"+user.Account, token, time.Second*2*3600).Err(); err != nil {
 		return err
 	}
 

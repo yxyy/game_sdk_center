@@ -107,7 +107,7 @@ func (m *Menu) GetAll() (menus []*Menu, err error) {
 	return
 }
 
-func (m *Menu) List(params *common.Params) (menus []*Menu, err error) {
+func (m *Menu) List(params *common.Params) (menus []*Menu, total int64, err error) {
 	tx := tool.MysqlDb.Model(&m)
 	if m.Id > 0 {
 		tx = tx.Where("id", m.Id)
@@ -118,12 +118,16 @@ func (m *Menu) List(params *common.Params) (menus []*Menu, err error) {
 	if m.Flag != "" {
 		tx = tx.Where("id", m.Flag)
 	}
-	// if err = tx.Offset(params.Offse).Limit(params.Limit).Find(&menus).Error;err!=nil{
-	// 	if err != nil {
-	// 		return
-	// 	}
-	// }
-	err = tx.Offset(params.Offse).Limit(params.Limit).Find(&menus).Error
+	if err = tx.Count(&total).Error; err != nil {
+		if err != nil {
+			return
+		}
+	}
+	if err = tx.Offset(params.Offse).Limit(params.Limit).Find(&menus).Error; err != nil {
+		if err != nil {
+			return
+		}
+	}
 	return
 }
 

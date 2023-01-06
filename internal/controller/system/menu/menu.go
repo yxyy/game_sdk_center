@@ -49,12 +49,16 @@ func List(c *gin.Context) {
 		response.Error(err)
 	}
 	params.Check()
-	menus, err := menu.List(params)
+	list, total, err := menu.List(params)
 	if err != nil {
 		response.Error(err)
 	}
 
-	response.SuccessData(menus)
+	var data = make(map[string]interface{})
+	data["rows"] = list
+	data["total"] = total
+
+	response.SuccessData(data)
 }
 
 func Tree(c *gin.Context) {
