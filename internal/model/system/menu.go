@@ -11,14 +11,15 @@ import (
 
 type Menu struct {
 	common.Model
-	Title     string `gorm:"title" form:"title" json:"title"`
-	Flag      string `gorm:"flag" form:"flag" json:"flag"`
-	Parent    int    `gorm:"parent" form:"parent" json:"parent"`
-	Path      string `gorm:"path" form:"path" json:"path"`
-	Redirect  string `gorm:"path" form:"path" json:"redirect"`
-	Component string `gorm:"component" form:"component" json:"component"`
-	Icon      string `gorm:"icon" form:"icon" json:"icon"`
-	Sort      int    `json:"sort" form:"sort" json:"sort"`
+	Title      string `gorm:"title" form:"title" json:"title"`
+	Name       string `gorm:"name" form:"name" json:"name"`
+	Parent     int    `gorm:"parent" form:"parent" json:"parent"`
+	Path       string `gorm:"path" form:"path" json:"path"`
+	Redirect   string `gorm:"path" form:"path" json:"redirect"`
+	Component  string `gorm:"component" form:"component" json:"component"`
+	Icon       string `gorm:"icon" form:"icon" json:"icon"`
+	Sort       int    `gorm:"sort" form:"sort" json:"sort"`
+	AlwaysShow int    `gorm:"alwaysShow" form:"alwaysShow" json:"alwaysShow"`
 }
 
 // MenuTree
@@ -37,14 +38,15 @@ type Menu struct {
 //	   ]
 //	 }
 type MenuTree struct {
-	Id         int64  `json:"id"`
-	Parent     int    `json:"parent"`
-	Path       string `json:"path"`
-	Redirect   string `json:"redirect"`
-	Component  string `json:"component"`
-	AlwaysShow bool   `json:"alwaysShow"`
-	Name       string `json:"name"`
-	Meta       `json:"meta"`
+	Id         int64       `json:"id"`
+	Parent     int         `json:"parent"`
+	Path       string      `json:"path"`
+	Redirect   string      `json:"redirect"`
+	Component  string      `json:"component"`
+	AlwaysShow int         `json:"alwaysShow"`
+	Name       string      `json:"name"`
+	Title      string      `json:"title"`
+	Icon       string      `json:"icon"`
 	Children   []*MenuTree `json:"children,omitempty"`
 }
 
@@ -61,7 +63,7 @@ func (m *Menu) Create() error {
 	if m.Title == "" {
 		return errors.New("标题不能空")
 	}
-	if m.Flag == "" {
+	if m.Name == "" {
 		return errors.New("标识不能空")
 	}
 	if m.Path == "" {
@@ -71,7 +73,7 @@ func (m *Menu) Create() error {
 		return errors.New("组件不能空")
 	}
 
-	if err := tool.MysqlDb.Model(m).Where("flag", m.Flag).First(&Menu{}).Error; err == nil {
+	if err := tool.MysqlDb.Model(m).Where("flag", m.Name).First(&Menu{}).Error; err == nil {
 		return errors.New("标识已存在")
 	}
 
@@ -115,8 +117,8 @@ func (m *Menu) List(params *common.Params) (menus []*Menu, total int64, err erro
 	if m.Title != "" {
 		tx = tx.Where("title", m.Title)
 	}
-	if m.Flag != "" {
-		tx = tx.Where("id", m.Flag)
+	if m.Name != "" {
+		tx = tx.Where("id", m.Name)
 	}
 	if err = tx.Count(&total).Error; err != nil {
 		if err != nil {
@@ -133,18 +135,7 @@ func (m *Menu) List(params *common.Params) (menus []*Menu, total int64, err erro
 
 func (m *Menu) GetTree() ([]*MenuTree, error) {
 
-	// result, err := tool.RedisClient.Get(context.Background(), "menus").Result()
-	// if err != nil && !errors.Is(err, redis.Nil) {
-	// 	return nil, err
-	// }
-	//
 	var trees []*MenuTree
-	// if result != "" {
-	// 	if err = json.Unmarshal([]byte(result), &trees); err != nil {
-	// 		return nil, err
-	// 	}
-	// 	return trees, err
-	// }
 
 	menus, err := m.GetAll()
 	if err != nil {
@@ -174,13 +165,11 @@ func tree(menus []*Menu, pid int) []*MenuTree {
 				Path:       v.Path,
 				Redirect:   v.Redirect,
 				Component:  v.Component,
-				Name:       v.Title,
-				AlwaysShow: true,
-				Meta: Meta{
-					Title: v.Title,
-					Icon:  v.Icon,
-				},
-				Children: tree(menus, int(v.Id)),
+				Name:       v.Name,
+				AlwaysShow: v.AlwaysShow,
+				Title:      v.Title,
+				Icon:       v.Icon,
+				Children:   tree(menus, int(v.Id)),
 			}
 
 			Trees = append(Trees, menuTree)
