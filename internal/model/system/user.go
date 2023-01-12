@@ -106,6 +106,14 @@ func (u *User) List(params common.Params) (user []*User, err error) {
 	return
 }
 
+func (u *User) All() (users []*User, err error) {
+
+	if err = tool.MysqlDb.Model(&u).Find(&users).Error; err != nil {
+		return
+	}
+	return
+}
+
 func (u *User) Create() error {
 	if u.Account == "" {
 		return errors.New("账号不能为空")
