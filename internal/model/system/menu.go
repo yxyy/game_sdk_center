@@ -11,32 +11,18 @@ import (
 
 type Menu struct {
 	common.Model
-	Title      string `gorm:"title" form:"title" json:"title"`
-	Name       string `gorm:"name" form:"name" json:"name"`
-	Parent     int    `gorm:"parent" form:"parent" json:"parent"`
-	Path       string `gorm:"path" form:"path" json:"path"`
-	Redirect   string `gorm:"path" form:"path" json:"redirect"`
-	Component  string `gorm:"component" form:"component" json:"component"`
-	Icon       string `gorm:"icon" form:"icon" json:"icon"`
-	Sort       int    `gorm:"sort" form:"sort" json:"sort"`
-	AlwaysShow int    `gorm:"alwaysShow" form:"alwaysShow" json:"alwaysShow"`
+	Title      string `gorm:"column:title" form:"title" json:"title"`
+	Name       string `gorm:"column:name" form:"name" json:"name"`
+	Parent     int    `gorm:"column:parent" form:"parent" json:"parent"`
+	Path       string `gorm:"column:path" form:"path" json:"path"`
+	Redirect   string `gorm:"column:path" form:"path" json:"redirect"`
+	Component  string `gorm:"column:component" form:"component" json:"component"`
+	Icon       string `gorm:"column:icon" form:"icon" json:"icon"`
+	Sort       int    `gorm:"column:sort" form:"sort" json:"sort"`
+	AlwaysShow int    `gorm:"column:alwaysShow" form:"alwaysShow" json:"alwaysShow"`
+	UpdateDate string `gorm:"-" json:"update_date"`
 }
 
-// MenuTree
-//
-//		{
-//	   path: '/',
-//	   component: Layout,
-//	   redirect: '/dashboard',
-//	   children: [
-//	     {
-//	       path: 'dashboard',
-//	       component: () => import('@/views/dashboard/index'),
-//	       name: 'Dashboard',
-//	       meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
-//	     }
-//	   ]
-//	 }
 type MenuTree struct {
 	Id         int64       `json:"id"`
 	Parent     int         `json:"parent"`
@@ -51,8 +37,8 @@ type MenuTree struct {
 }
 
 type Meta struct {
-	Title string `gorm:"title" form:"title" json:"title"`
-	Icon  string `gorm:"icon" form:"icon" json:"icon"`
+	Title string `gorm:"column:title" form:"title" json:"title"`
+	Icon  string `gorm:"column:icon" form:"icon" json:"icon"`
 }
 
 func NewMenu() *Menu {
@@ -130,6 +116,7 @@ func (m *Menu) List(params *common.Params) (menus []*Menu, total int64, err erro
 			return
 		}
 	}
+
 	return
 }
 

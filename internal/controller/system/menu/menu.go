@@ -1,9 +1,11 @@
 package menu
 
 import (
+	"game.sdk.center/internal/mapping"
 	"game.sdk.center/internal/model/common"
 	"game.sdk.center/internal/model/system"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 func Create(c *gin.Context) {
@@ -15,6 +17,7 @@ func Create(c *gin.Context) {
 		response.Error(err)
 	}
 
+	menu.OptUser = c.GetInt64("userId")
 	if err := menu.Create(); err != nil {
 		response.Error(err)
 	}
@@ -30,7 +33,7 @@ func Update(c *gin.Context) {
 	if err := c.ShouldBind(&menu); err != nil {
 		response.Error(err)
 	}
-
+	menu.OptUser = c.GetInt64("userId")
 	if err := menu.Update(); err != nil {
 		response.Error(err)
 	}
@@ -52,6 +55,15 @@ func List(c *gin.Context) {
 	list, total, err := menu.List(params)
 	if err != nil {
 		response.Error(err)
+	}
+
+	userMap, err := mapping.User()
+	if err != nil {
+		return
+	}
+	for _, v := range list {
+		v.UpdateDate = time.Unix(v.UpdatedAt, 0).Format("2006-01-02 15:04:05")
+		v.OptUserName = userMap[int(v.Id)]
 	}
 
 	var data = make(map[string]interface{})
