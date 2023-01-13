@@ -1,24 +1,22 @@
 package menu
 
 import (
-	"game.sdk.center/internal/mapping"
 	"game.sdk.center/internal/model/common"
-	"game.sdk.center/internal/model/system"
+	"game.sdk.center/internal/services/system"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 func Create(c *gin.Context) {
 
-	menu := system.NewMenu()
+	servicesMenu := system.NewServicesMenu()
 	response := common.NewResponse(c)
 
-	if err := c.ShouldBind(&menu); err != nil {
+	if err := c.ShouldBind(&servicesMenu); err != nil {
 		response.Error(err)
 	}
 
-	menu.OptUser = c.GetInt64("userId")
-	if err := menu.Create(); err != nil {
+	servicesMenu.OptUser = c.GetInt64("userId")
+	if err := servicesMenu.Create(); err != nil {
 		response.Error(err)
 	}
 
@@ -27,14 +25,14 @@ func Create(c *gin.Context) {
 
 func Update(c *gin.Context) {
 
-	menu := system.NewMenu()
+	servicesMenu := system.NewServicesMenu()
 	response := common.NewResponse(c)
 
-	if err := c.ShouldBind(&menu); err != nil {
+	if err := c.ShouldBind(&servicesMenu); err != nil {
 		response.Error(err)
 	}
-	menu.OptUser = c.GetInt64("userId")
-	if err := menu.Update(); err != nil {
+	servicesMenu.OptUser = c.GetInt64("userId")
+	if err := servicesMenu.Update(); err != nil {
 		response.Error(err)
 	}
 
@@ -42,28 +40,20 @@ func Update(c *gin.Context) {
 }
 
 func List(c *gin.Context) {
-	menu := system.NewMenu()
+
+	servicesMenu := system.NewServicesMenu()
 	response := common.NewResponse(c)
 	params := common.NewParams()
-	if err := c.ShouldBind(menu); err != nil {
+	if err := c.ShouldBind(servicesMenu); err != nil {
 		response.Error(err)
 	}
 	if err := c.ShouldBind(params); err != nil {
 		response.Error(err)
 	}
 	params.Check()
-	list, total, err := menu.List(params)
+	list, total, err := servicesMenu.List(params)
 	if err != nil {
 		response.Error(err)
-	}
-
-	userMap, err := mapping.User()
-	if err != nil {
-		return
-	}
-	for _, v := range list {
-		v.UpdateDate = time.Unix(v.UpdatedAt, 0).Format("2006-01-02 15:04:05")
-		v.OptUserName = userMap[int(v.Id)]
 	}
 
 	var data = make(map[string]interface{})
@@ -75,10 +65,10 @@ func List(c *gin.Context) {
 
 func Tree(c *gin.Context) {
 
-	menu := system.NewMenu()
+	servicesMenu := system.NewServicesMenu()
 	response := common.NewResponse(c)
 
-	tree, err := menu.GetTree()
+	tree, err := servicesMenu.GetTree()
 	if err != nil {
 		response.Error(err)
 	}
