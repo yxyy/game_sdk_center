@@ -3,6 +3,7 @@ package user
 import (
 	"game.sdk.center/internal/model/common"
 	"game.sdk.center/internal/model/system"
+	system2 "game.sdk.center/internal/services/system"
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,7 +33,7 @@ func List(c *gin.Context) {
 }
 
 func Info(c *gin.Context) {
-	user := system.NewUser()
+	user := system2.NewServiceUser()
 	response := common.NewResponse(c)
 	user.Id = c.GetInt64("userId")
 

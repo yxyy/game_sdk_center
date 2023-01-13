@@ -51,25 +51,6 @@ func (u *User) UserInfo() (user *User, err error) {
 	return
 }
 
-func (u *User) UserInfos() (map[string]interface{}, error) {
-	user, err := u.UserInfo()
-	if err != nil {
-		return nil, err
-	}
-
-	menu := NewMenu()
-	getTree, err := menu.GetTree()
-	if err != nil {
-		return nil, err
-	}
-
-	data := make(map[string]interface{})
-	data["userInfo"] = user
-	data["menus"] = getTree
-
-	return data, nil
-}
-
 func (u *User) List(params common.Params) (user []*User, err error) {
 	tx := tool.MysqlDb.Model(&u)
 	if u.Id > 0 {

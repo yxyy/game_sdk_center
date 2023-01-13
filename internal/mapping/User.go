@@ -39,7 +39,7 @@ func User() (userMap map[int]string, err error) {
 		return
 	}
 
-	err = tool.RedisClient.Set(context.Background(), "userNameMap", marshal, time.Second*60*60*2).Err()
+	err = tool.RedisClient.Set(context.Background(), "userNameMap", marshal, time.Second*60*60).Err()
 
 	return
 }
