@@ -39,7 +39,7 @@ func (m ServicesMenu) Create() error {
 		return err
 	}
 
-	return m.remoteCache()
+	return m.removeCache()
 }
 
 func (m ServicesMenu) Update() error {
@@ -51,7 +51,7 @@ func (m ServicesMenu) Update() error {
 		return err
 	}
 
-	return m.remoteCache()
+	return m.removeCache()
 }
 
 func (m ServicesMenu) List(params *common.Params) (servicesMenuList []*ServicesMenu, total int64, err error) {
@@ -138,7 +138,7 @@ func tree(menus []*system.Menu, pid int) []*system.MenuTree {
 	return Trees
 }
 
-func (m ServicesMenu) remoteCache() error {
+func (m ServicesMenu) removeCache() error {
 	if err := tool.RedisClient.Del(context.Background(), "menus").Err(); err != nil {
 		return err
 	}

@@ -31,7 +31,7 @@ type MenuTree struct {
 	Children   []*MenuTree `json:"children,omitempty"`
 }
 
-func (m *Menu) Create() error {
+func (m Menu) Create() error {
 
 	// if err := tool.MysqlDb.Model(m).Where("name", m.Name).First(&Menu{}).Error; err == nil {
 	// 	return errors.New("标识已存在")
@@ -48,7 +48,7 @@ func (m *Menu) Create() error {
 	return nil
 }
 
-func (m *Menu) Update() error {
+func (m Menu) Update() error {
 	if err := tool.MysqlDb.Model(m).Where("id", m.Id).Updates(m).Error; err != nil {
 		return err
 	}
@@ -56,7 +56,7 @@ func (m *Menu) Update() error {
 	return nil
 }
 
-func (m *Menu) GetAll() (menus []*Menu, err error) {
+func (m Menu) GetAll() (menus []*Menu, err error) {
 
 	if err = tool.MysqlDb.Model(&m).Where("status", 0).Order("sort desc").Order("created_at desc").Find(&menus).Error; err != nil {
 		return
@@ -65,7 +65,7 @@ func (m *Menu) GetAll() (menus []*Menu, err error) {
 	return
 }
 
-func (m *Menu) List(params *common.Params) (menus []*Menu, total int64, err error) {
+func (m Menu) List(params *common.Params) (menus []*Menu, total int64, err error) {
 	tx := tool.MysqlDb.Model(&m)
 	if m.Id > 0 {
 		tx = tx.Where("id", m.Id)
