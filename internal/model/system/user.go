@@ -19,7 +19,7 @@ type User struct {
 	Phone         int64  `json:"phone" form:"phone" gorm:"phone"`
 	Wechat        string `json:"wechat" form:"wechat" gorm:"wechat"`
 	Email         string `json:"email" form:"email" gorm:"email"`
-	GroupId       int64  `json:"group_id" form:"group_id" gorm:"group_id"`
+	GroupId       int    `json:"group_id" form:"group_id" gorm:"group_id"`
 	Avatar        string `json:"avatar" form:"avatar" gorm:"avatar"`
 	Status        int64  `json:"status" form:"status" gorm:"status"`
 	LastLoginIp   string `json:"last_login_ip" form:"last_login_ip" gorm:"last_login_ip"`
@@ -51,7 +51,7 @@ func (u *User) UserInfo() (user *User, err error) {
 	return
 }
 
-func (u *User) List(params common.Params) (user []*User, err error) {
+func (u *User) List(params common.Params) (user []*User, total int64, err error) {
 	tx := tool.MysqlDb.Model(&u)
 	if u.Id > 0 {
 		tx = tx.Where("id", u.Id)
@@ -75,12 +75,16 @@ func (u *User) List(params common.Params) (user []*User, err error) {
 		tx = tx.Where("wechat", u.Wechat)
 	}
 	if u.Nickname != "" {
-		tx = tx.Where("nickname", "like", "%"+u.Nickname+"%")
+		tx = tx.Where("nickname like ?", "%"+u.Nickname+"%")
+	}
+
+	if err = tx.Count(&total).Error; err != nil {
+		return nil, 0, err
 	}
 
 	if err = tx.Offset(params.Offse).Limit(params.Limit).Find(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return user, nil
+			return nil, 0, err
 		}
 	}
 

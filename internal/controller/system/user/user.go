@@ -8,7 +8,8 @@ import (
 )
 
 func List(c *gin.Context) {
-	user := system.NewUser()
+
+	user := system2.NewServiceUser()
 	response := common.NewResponse(c)
 
 	if err := c.ShouldBind(&user); err != nil {
@@ -22,20 +23,24 @@ func List(c *gin.Context) {
 		return
 	}
 	params.Check()
-	list, err := user.List(*params)
+	list, total, err := user.List(params)
 	if err != nil {
 		response.Error(err)
 		return
 	}
 
-	response.SuccessData(list)
+	data := make(map[string]interface{})
+	data["rows"] = list
+	data["total"] = total
+
+	response.SuccessData(data)
 
 }
 
 func Info(c *gin.Context) {
 	user := system2.NewServiceUser()
 	response := common.NewResponse(c)
-	user.Id = c.GetInt64("userId")
+	user.Id = c.GetInt("userId")
 
 	data, err := user.UserInfos()
 	if err != nil {
@@ -52,7 +57,7 @@ func Create(c *gin.Context) {
 		response.Error(err)
 		return
 	}
-	user.OptUser = c.GetInt64("user_id")
+	user.OptUser = c.GetInt("user_id")
 	if err := user.Create(); err != nil {
 		response.Error(err)
 		return
@@ -69,7 +74,7 @@ func Update(c *gin.Context) {
 		return
 	}
 
-	user.OptUser = c.GetInt64("user_id")
+	user.OptUser = c.GetInt("user_id")
 	if err := user.Update(); err != nil {
 		response.Error(err)
 		return
