@@ -47,7 +47,7 @@ func List(c *gin.Context) {
 	if err := c.ShouldBind(servicesMenu); err != nil {
 		response.Error(err)
 	}
-	if err := c.ShouldBind(params); err != nil {
+	if err := c.ShouldBind(&params); err != nil {
 		response.Error(err)
 	}
 	params.Check()
