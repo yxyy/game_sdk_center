@@ -73,7 +73,7 @@ func Lists(c *gin.Context) {
 
 	group := system.NewServiceGroup()
 	response := common.NewResponse(c)
-	if err := c.ShouldBind(group); err != nil {
+	if err := c.ShouldBind(&group); err != nil {
 		response.Error(err)
 	}
 	groups, err := group.Lists()
