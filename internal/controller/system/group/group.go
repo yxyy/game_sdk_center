@@ -2,23 +2,22 @@ package group
 
 import (
 	"game.sdk.center/internal/model/common"
-	"game.sdk.center/internal/model/system"
+	"game.sdk.center/internal/services/system"
 	"github.com/gin-gonic/gin"
 )
 
 func Create(c *gin.Context) {
 
-	group := system.NewGroup()
+	group := system.NewServiceGroup()
 	response := common.NewResponse(c)
 
 	if err := c.ShouldBind(&group); err != nil {
 		response.Fail("参数格式错误，请检查")
-		return
 	}
 
+	group.OptUser = c.GetInt("userId")
 	if err := group.Create(); err != nil {
 		response.Error(err)
-		return
 	}
 
 	response.Success()
@@ -26,15 +25,16 @@ func Create(c *gin.Context) {
 
 func Update(c *gin.Context) {
 
-	group := system.NewGroup()
+	serviceGroup := system.NewServiceGroup()
 	response := common.NewResponse(c)
 
-	if err := c.ShouldBind(&group); err != nil {
+	if err := c.ShouldBind(&serviceGroup); err != nil {
 		response.Fail("参数格式错误，请检查")
 		return
 	}
 
-	if err := group.Update(); err != nil {
+	serviceGroup.OptUser = c.GetInt("userId")
+	if err := serviceGroup.Update(); err != nil {
 		response.Error(err)
 		return
 	}
@@ -43,22 +43,43 @@ func Update(c *gin.Context) {
 }
 
 func List(c *gin.Context) {
-	group := system.NewGroup()
+
+	group := system.NewServiceGroup()
 	response := common.NewResponse(c)
 	params := common.NewParams()
-	if err := c.ShouldBind(group); err != nil {
+	if err := c.ShouldBind(&group); err != nil {
 		response.Error(err)
 		return
 	}
-	if err := c.ShouldBind(params); err != nil {
+	if err := c.ShouldBind(&params); err != nil {
 		response.Error(err)
 		return
 	}
-	grous, err := group.List(params)
+
+	groups, total, err := group.List(params)
 	if err != nil {
 		response.Error(err)
 		return
 	}
 
-	response.SuccessData(grous)
+	data := make(map[string]interface{})
+	data["rows"] = groups
+	data["total"] = total
+
+	response.SuccessData(data)
+}
+
+func Lists(c *gin.Context) {
+
+	group := system.NewServiceGroup()
+	response := common.NewResponse(c)
+	if err := c.ShouldBind(group); err != nil {
+		response.Error(err)
+	}
+	groups, err := group.Lists()
+	if err != nil {
+		response.Error(err)
+	}
+
+	response.SuccessData(groups)
 }
