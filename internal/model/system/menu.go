@@ -1,8 +1,10 @@
 package system
 
 import (
+	"fmt"
 	"game.sdk.center/internal/model/common"
 	"game.sdk.center/tool"
+	"time"
 )
 
 type Menu struct {
@@ -11,7 +13,7 @@ type Menu struct {
 	Name       string `gorm:"column:name" form:"name" json:"name"`
 	Parent     int    `gorm:"column:parent" form:"parent" json:"parent"`
 	Path       string `gorm:"column:path" form:"path" json:"path"`
-	Redirect   string `gorm:"column:path" form:"path" json:"redirect"`
+	Redirect   string `gorm:"column:redirect" form:"redirect" json:"redirect"`
 	Component  string `gorm:"column:component" form:"component" json:"component"`
 	Icon       string `gorm:"column:icon" form:"icon" json:"icon"`
 	Sort       int    `gorm:"column:sort" form:"sort" json:"sort"`
@@ -19,7 +21,7 @@ type Menu struct {
 }
 
 type MenuTree struct {
-	Id         int64       `json:"id"`
+	Id         int         `json:"id"`
 	Parent     int         `json:"parent"`
 	Path       string      `json:"path"`
 	Redirect   string      `json:"redirect"`
@@ -49,7 +51,24 @@ func (m Menu) Create() error {
 }
 
 func (m Menu) Update() error {
-	if err := tool.MysqlDb.Model(m).Where("id", m.Id).Updates(m).Error; err != nil {
+
+	var data = make(map[string]interface{})
+	data["id"] = m.Id
+	data["title"] = m.Title
+	data["name"] = m.Name
+	data["parent"] = m.Parent
+	data["path"] = m.Path
+	data["redirect"] = m.Redirect
+	data["component"] = m.Component
+	data["icon"] = m.Icon
+	data["sort"] = m.Sort
+	data["alwaysShow"] = m.AlwaysShow
+	data["opt_user"] = m.OptUser
+	data["updated_at"] = time.Now().Unix()
+
+	fmt.Printf("%#v\n", data)
+
+	if err := tool.MysqlDb.Model(m).Where("id", m.Id).Updates(data).Error; err != nil {
 		return err
 	}
 
@@ -65,7 +84,7 @@ func (m Menu) GetAll() (menus []*Menu, err error) {
 	return
 }
 
-func (m Menu) List(params *common.Params) (menus []*Menu, total int64, err error) {
+func (m Menu) List(params common.Params) (menus []*Menu, total int64, err error) {
 	tx := tool.MysqlDb.Model(&m)
 	if m.Id > 0 {
 		tx = tx.Where("id", m.Id)

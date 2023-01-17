@@ -15,7 +15,7 @@ func Create(c *gin.Context) {
 		response.Error(err)
 	}
 
-	servicesMenu.OptUser = c.GetInt64("userId")
+	servicesMenu.OptUser = c.GetInt("userId")
 	if err := servicesMenu.Create(); err != nil {
 		response.Error(err)
 	}
@@ -31,7 +31,7 @@ func Update(c *gin.Context) {
 	if err := c.ShouldBind(&servicesMenu); err != nil {
 		response.Error(err)
 	}
-	servicesMenu.OptUser = c.GetInt64("userId")
+	servicesMenu.OptUser = c.GetInt("userId")
 	if err := servicesMenu.Update(); err != nil {
 		response.Error(err)
 	}

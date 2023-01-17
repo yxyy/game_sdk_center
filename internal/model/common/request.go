@@ -6,8 +6,8 @@ type Params struct {
 	Offse int
 }
 
-func NewParams() *Params {
-	return &Params{
+func NewParams() Params {
+	return Params{
 		Page:  1,
 		Limit: 10,
 	}

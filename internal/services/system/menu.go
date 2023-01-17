@@ -7,6 +7,7 @@ import (
 	"game.sdk.center/internal/mapping"
 	"game.sdk.center/internal/model/common"
 	"game.sdk.center/internal/model/system"
+	"game.sdk.center/internal/services/conmon"
 	"game.sdk.center/tool"
 	"github.com/go-redis/redis/v8"
 	"time"
@@ -14,7 +15,7 @@ import (
 
 type ServicesMenu struct {
 	system.Menu
-	UpdateDate string `gorm:"-" json:"update_date"`
+	conmon.Format
 }
 
 func NewServicesMenu() ServicesMenu {
@@ -54,7 +55,7 @@ func (m ServicesMenu) Update() error {
 	return m.removeCache()
 }
 
-func (m ServicesMenu) List(params *common.Params) (servicesMenuList []*ServicesMenu, total int64, err error) {
+func (m ServicesMenu) List(params common.Params) (servicesMenuList []*ServicesMenu, total int64, err error) {
 
 	list, total, err := m.Menu.List(params)
 	if err != nil {
@@ -66,12 +67,13 @@ func (m ServicesMenu) List(params *common.Params) (servicesMenuList []*ServicesM
 		return
 	}
 	for _, v := range list {
-		v.OptUserName = userMap[int(v.Id)]
 		tmp := &ServicesMenu{
-			Menu:       *v,
-			UpdateDate: time.Unix(v.UpdatedAt, 0).Format("2006-01-02 15:04:05"),
+			Menu: *v,
+			Format: conmon.Format{
+				UpdateDate:  time.Unix(v.UpdatedAt, 0).Format("2006-01-02 15:04:05"),
+				OptUserName: userMap[v.OptUser],
+			},
 		}
-
 		servicesMenuList = append(servicesMenuList, tmp)
 	}
 
