@@ -1,7 +1,6 @@
 package system
 
 import (
-	"fmt"
 	"game.sdk.center/internal/model/common"
 	"game.sdk.center/tool"
 	"time"
@@ -11,6 +10,7 @@ type Permission struct {
 	common.Model
 	Name       string `gorm:"column:name" form:"name" json:"name"`
 	Permission string `gorm:"column:permission" form:"-" json:"permission"`
+	Router     string `gorm:"column:router" form:"-" json:"router"`
 }
 
 func (p Permission) Create() error {
@@ -24,18 +24,17 @@ func (p Permission) Update() error {
 	data["id"] = p.Id
 	data["name"] = p.Name
 	data["permission"] = p.Permission
+	data["router"] = p.Router
 	data["opt_user"] = p.OptUser
 	data["updated_at"] = time.Now().Unix()
-
-	fmt.Println(data)
 
 	return tool.MysqlDb.Model(&p).Where("id", p.Id).Updates(data).Error
 
 }
 
-func (p Permission) GetAll() (menus []*Permission, err error) {
+func (p Permission) GetAll() (permissions []*Permission, err error) {
 
-	if err = tool.MysqlDb.Model(&p).Where("status", 0).Order("sort desc").Order("created_at desc").Find(&menus).Error; err != nil {
+	if err = tool.MysqlDb.Model(&p).Find(&permissions).Error; err != nil {
 		return
 	}
 

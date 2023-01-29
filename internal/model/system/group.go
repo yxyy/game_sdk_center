@@ -8,9 +8,10 @@ import (
 
 type Group struct {
 	common.Model
-	Name    string `gorm:"name" form:"name" json:"name"`
-	Flag    string `gorm:"flag" form:"flag" json:"flag"`
-	Remarks string `gorm:"remarks" form:"remarks" json:"remarks"`
+	Name         string `gorm:"name" form:"name" json:"name"`
+	Flag         string `gorm:"flag" form:"flag" json:"flag"`
+	PermissionId int    `gorm:"permission_id" form:"permission_id" json:"permission_id"`
+	Remarks      string `gorm:"remarks" form:"remarks" json:"remarks"`
 }
 
 func NewGroup() *Group {
@@ -37,11 +38,7 @@ func (g Group) Create() error {
 
 func (g Group) Update() error {
 
-	if err := tool.MysqlDb.Model(g).Where("id", g.Id).Updates(&g).Error; err != nil {
-		return err
-	}
-
-	return nil
+	return tool.MysqlDb.Model(g).Where("id", g.Id).Updates(&g).Error
 }
 
 func (g Group) List(params common.Params) (grous []*Group, total int64, err error) {

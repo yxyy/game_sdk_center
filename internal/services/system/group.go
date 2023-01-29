@@ -20,12 +20,6 @@ func NewServiceGroup() ServiceGroup {
 	return ServiceGroup{}
 }
 
-func NewServiceGroupByOptUser(optUser int) ServiceGroup {
-	return ServiceGroup{Group: system.Group{
-		Model: common.Model{OptUser: optUser},
-	}}
-}
-
 func (g ServiceGroup) List(params common.Params) (groups []*ServiceGroup, total int64, err error) {
 
 	params.Check()
@@ -72,6 +66,18 @@ func (g ServiceGroup) Create() error {
 }
 
 func (g ServiceGroup) Update() error {
+	if g.Id <= 0 {
+		return errors.New("id 无效")
+	}
+
+	if err := g.Group.Update(); err != nil {
+		return err
+	}
+
+	return g.removeCache()
+}
+
+func (g ServiceGroup) Permission() error {
 	if g.Id <= 0 {
 		return errors.New("id 无效")
 	}

@@ -17,8 +17,6 @@ func Create(c *gin.Context) {
 	}
 
 	ServicesPermission.OptUser = c.GetInt("userId")
-
-	fmt.Printf("%#v\n", ServicesPermission)
 	if err := ServicesPermission.Create(); err != nil {
 		response.Error(err)
 	}
@@ -66,4 +64,16 @@ func List(c *gin.Context) {
 	data["total"] = total
 
 	response.SuccessData(data)
+}
+
+func Lists(c *gin.Context) {
+
+	ServicesPermission := system.NewServicesPermission()
+	response := common.NewResponse(c)
+	list, err := ServicesPermission.Lists()
+	if err != nil {
+		response.Error(err)
+	}
+
+	response.SuccessData(list)
 }

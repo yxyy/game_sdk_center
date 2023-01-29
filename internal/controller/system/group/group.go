@@ -42,6 +42,25 @@ func Update(c *gin.Context) {
 	response.Success()
 }
 
+func Permission(c *gin.Context) {
+
+	serviceGroup := system.NewServiceGroup()
+	response := common.NewResponse(c)
+
+	if err := c.ShouldBind(&serviceGroup); err != nil {
+		response.Error(err)
+		return
+	}
+
+	serviceGroup.OptUser = c.GetInt("userId")
+	if err := serviceGroup.Permission(); err != nil {
+		response.Error(err)
+		return
+	}
+
+	response.Success()
+}
+
 func List(c *gin.Context) {
 
 	group := system.NewServiceGroup()

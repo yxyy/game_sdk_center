@@ -1,7 +1,6 @@
 package system
 
 import (
-	"fmt"
 	"game.sdk.center/internal/model/common"
 	"game.sdk.center/tool"
 	"time"
@@ -66,8 +65,6 @@ func (m Menu) Update() error {
 	data["opt_user"] = m.OptUser
 	data["updated_at"] = time.Now().Unix()
 
-	fmt.Printf("%#v\n", data)
-
 	if err := tool.MysqlDb.Model(m).Where("id", m.Id).Updates(data).Error; err != nil {
 		return err
 	}
@@ -78,6 +75,15 @@ func (m Menu) Update() error {
 func (m Menu) GetAll() (menus []*Menu, err error) {
 
 	if err = tool.MysqlDb.Model(&m).Where("status", 0).Order("sort desc").Order("created_at desc").Find(&menus).Error; err != nil {
+		return
+	}
+
+	return
+}
+
+func (m Menu) GetByIds(ids []int) (menus []*Menu, err error) {
+
+	if err = tool.MysqlDb.Model(&m).Where("id in ?", ids).Find(&menus).Error; err != nil {
 		return
 	}
 
