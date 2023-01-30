@@ -46,7 +46,8 @@ func Auth(c *gin.Context) {
 	}
 
 	c.Set("userId", user.Id)
-	c.Set("groupId", user.Id)
+	c.Set("groupId", user.GroupId)
+	c.Set("groupName", user.GroupId)
 	c.Set("userAccount", user.Account)
 	c.Set("userInfo", user)
 

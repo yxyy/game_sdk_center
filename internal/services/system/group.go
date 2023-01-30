@@ -2,6 +2,7 @@ package system
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"game.sdk.center/internal/mapping"
 	"game.sdk.center/internal/model/common"
@@ -86,7 +87,55 @@ func (g ServiceGroup) Permission() error {
 		return err
 	}
 
-	return g.removeCache()
+	// 先清空角色路由权限
+	if err := g.removeRouterCache(); err != nil {
+		return err
+	}
+
+	// 设置角色路由权限
+	return g.SetRouterCache()
+}
+
+// SetRouterCache 设置角色权限缓存
+func (g ServiceGroup) SetRouterCache() error {
+
+	if g.Id <= 0 {
+		return errors.New("角色Id无效")
+	}
+
+	if g.PermissionId <= 0 {
+		return errors.New("权限Id无效")
+	}
+
+	var permission system.Permission
+
+	permission.Id = g.PermissionId
+	if err := permission.Get(); err != nil {
+		return err
+	}
+
+	var router []string
+	if err := json.Unmarshal([]byte(permission.Router), &router); err != nil {
+		return err
+	}
+
+	for _, v := range router {
+		tool.RedisClient.HSet(context.Background(), "menu_router:"+g.Flag, v, 1, -1)
+	}
+
+	return nil
+
+}
+
+// removeRouterCache 清空角色路由缓存
+func (g ServiceGroup) removeRouterCache() error {
+
+	if g.Id <= 0 {
+		return errors.New("角色Id无效")
+	}
+
+	return tool.RedisClient.Del(context.Background(), "menu_router:"+g.Flag).Err()
+
 }
 
 func (g ServiceGroup) removeCache() error {

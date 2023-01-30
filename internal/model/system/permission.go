@@ -32,6 +32,11 @@ func (p Permission) Update() error {
 
 }
 
+func (p Permission) Get() (err error) {
+
+	return tool.MysqlDb.Model(&p).Where("id", p.Id).Find(&p).Error
+}
+
 func (p Permission) GetAll() (permissions []*Permission, err error) {
 
 	if err = tool.MysqlDb.Model(&p).Find(&permissions).Error; err != nil {
