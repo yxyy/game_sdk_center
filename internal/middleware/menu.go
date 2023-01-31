@@ -10,7 +10,9 @@ import (
 
 func Menu(c *gin.Context) {
 
-	if c.GetString("groupId") == "supper" {
+	groupName := c.GetString("groupName")
+	// 草鸡管理员直接放行
+	if groupName == "supper" {
 		c.Next()
 		return
 	}
@@ -19,16 +21,15 @@ func Menu(c *gin.Context) {
 	index := strings.LastIndex(path, "/")
 	if index <= 0 {
 		response.SetResult(4004, "无效的请求路径", nil)
+		c.Abort()
+		return
 	}
 
-	groupId := c.GetString("groupId")
-	result, err := tool.RedisClient.HGet(context.Background(), "menu_router:"+groupId, path[:index]).Result()
-	if err != nil {
-		response.Error(err)
-	}
-
-	if result != "1" {
+	result, err := tool.RedisClient.HGet(context.Background(), "menu_router:"+groupName, path[:index]).Result()
+	if err != nil || result != "1" {
 		response.SetResult(4003, "没有权限", nil)
+		c.Abort()
+		return
 	}
 
 	c.Next()

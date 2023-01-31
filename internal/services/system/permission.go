@@ -1,14 +1,12 @@
 package system
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"game.sdk.center/internal/mapping"
 	"game.sdk.center/internal/model/common"
 	"game.sdk.center/internal/model/system"
 	"game.sdk.center/internal/services/conmon"
-	"game.sdk.center/tool"
 	"sort"
 	"time"
 )
@@ -46,11 +44,7 @@ func (s ServicesPermission) Create() error {
 	}
 	s.Permission.Router = router
 
-	if err = s.Permission.Create(); err != nil {
-		return err
-	}
-
-	return s.removeCache()
+	return s.Permission.Create()
 }
 
 func (s ServicesPermission) Update() error {
@@ -74,7 +68,7 @@ func (s ServicesPermission) Update() error {
 		return err
 	}
 
-	return s.removeCache()
+	return s.UpdateCache()
 }
 
 func (s ServicesPermission) List(params common.Params) (servicesPermissionList []*ServicesPermission, total int64, err error) {
@@ -146,9 +140,28 @@ func (s ServicesPermission) Router() (string, error) {
 	return string(marshal), nil
 }
 
-func (s ServicesPermission) removeCache() error {
-	if err := tool.RedisClient.Del(context.Background(), "menus").Err(); err != nil {
+// UpdateCache 修改权限时更新对应分组路由缓存
+func (s ServicesPermission) UpdateCache() error {
+
+	if s.Id <= 0 {
+		return errors.New("id 无效")
+	}
+
+	group := system.NewGroup()
+	group.PermissionId = s.Id
+	groups, err := group.GetAll()
+	if err != nil {
 		return err
+	}
+
+	for _, g := range groups {
+		go func(gs *system.Group) {
+			serviceGroup := NewServiceGroup()
+			serviceGroup.Group = *gs
+			if err = serviceGroup.SetRouterCache(); err != nil {
+				return
+			}
+		}(g)
 	}
 
 	return nil

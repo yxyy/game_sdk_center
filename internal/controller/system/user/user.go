@@ -2,14 +2,13 @@ package user
 
 import (
 	"game.sdk.center/internal/model/common"
-	"game.sdk.center/internal/model/system"
-	system2 "game.sdk.center/internal/services/system"
+	"game.sdk.center/internal/services/system"
 	"github.com/gin-gonic/gin"
 )
 
 func List(c *gin.Context) {
 
-	user := system2.NewServiceUser()
+	user := system.NewServiceUser()
 	response := common.NewResponse(c)
 
 	if err := c.ShouldBind(&user); err != nil {
@@ -38,7 +37,7 @@ func List(c *gin.Context) {
 }
 
 func Info(c *gin.Context) {
-	user := system2.NewServiceUser()
+	user := system.NewServiceUser()
 	response := common.NewResponse(c)
 	user.Id = c.GetInt("userId")
 
@@ -51,7 +50,7 @@ func Info(c *gin.Context) {
 }
 
 func Create(c *gin.Context) {
-	user := system.NewUser()
+	user := system.NewServiceUser()
 	response := common.NewResponse(c)
 	if err := c.ShouldBind(&user); err != nil {
 		response.Error(err)
@@ -66,7 +65,7 @@ func Create(c *gin.Context) {
 }
 
 func Update(c *gin.Context) {
-	user := system.NewUser()
+	user := system.NewServiceUser()
 	response := common.NewResponse(c)
 
 	if err := c.ShouldBind(&user); err != nil {
@@ -84,7 +83,7 @@ func Update(c *gin.Context) {
 }
 
 func Remove(c *gin.Context) {
-	user := system.NewUser()
+	user := system.NewServiceUser()
 	response := common.NewResponse(c)
 	if err := c.ShouldBind(user); err != nil {
 		response.Error(err)

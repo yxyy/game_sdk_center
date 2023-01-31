@@ -38,17 +38,31 @@ func Login(c *gin.Context) {
 		response.Fail("无效的登录方式")
 	}
 
+	// 账号信息
 	user, err := system.Login(login)
 	if err != nil {
 		response.Error(err)
 	}
 
-	token := CreateToken(user)
+	// 分组信息
+	var group system.Group
+	group.Id = user.GroupId
+	if err = group.Get(); err != nil {
+		response.Error(err)
+	}
+
+	// token信息
+	tokenInfo := system.NewTokenInfo()
+	tokenInfo.User = user
+	tokenInfo.GroupName = group.Flag
+	tokenInfo.PermissionId = group.PermissionId
+
+	token := CreateToken()
 	var data = make(map[string]interface{})
-	data["userInfo"] = user
+	data["userInfo"] = tokenInfo
 	data["token"] = token
 
-	if err = updateToken(token, user); err != nil {
+	if err = updateToken(token, tokenInfo); err != nil {
 		response.Error(err)
 	}
 
@@ -76,14 +90,14 @@ func Logout(c *gin.Context) {
 	response.Success()
 }
 
-func CreateToken(user system.User) string {
+func CreateToken() string {
 
 	// return fmt.Sprintf("%d_%s_%s", user.GroupId, user.Account, tool.Salt())
 	return tool.Salt()
 
 }
 
-func updateToken(token string, user system.User) error {
+func updateToken(token string, user system.TokenInfo) error {
 	// 先删除可能存在的token
 	result, err := tool.RedisClient.Get(context.Background(), "access_token:"+user.Account).Result()
 	if !errors.Is(err, redis.Nil) {

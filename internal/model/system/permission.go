@@ -32,7 +32,7 @@ func (p Permission) Update() error {
 
 }
 
-func (p Permission) Get() (err error) {
+func (p *Permission) Get() (err error) {
 
 	return tool.MysqlDb.Model(&p).Where("id", p.Id).Find(&p).Error
 }

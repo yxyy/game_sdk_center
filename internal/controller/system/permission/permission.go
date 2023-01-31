@@ -1,7 +1,6 @@
 package permission
 
 import (
-	"fmt"
 	"game.sdk.center/internal/model/common"
 	"game.sdk.center/internal/services/system"
 	"github.com/gin-gonic/gin"
@@ -33,7 +32,6 @@ func Update(c *gin.Context) {
 		response.Error(err)
 	}
 
-	fmt.Printf("%#v\n", ServicesPermission)
 	ServicesPermission.OptUser = c.GetInt("userId")
 	if err := ServicesPermission.Update(); err != nil {
 		response.Error(err)

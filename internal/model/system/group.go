@@ -41,6 +41,7 @@ func (g Group) Update() error {
 	return tool.MysqlDb.Model(g).Where("id", g.Id).Updates(&g).Error
 }
 
+// List 表格列表
 func (g Group) List(params common.Params) (grous []*Group, total int64, err error) {
 
 	tx := tool.MysqlDb.Model(&g)
@@ -61,10 +62,29 @@ func (g Group) List(params common.Params) (grous []*Group, total int64, err erro
 	return
 }
 
+// GetAll 获取全部
 func (g Group) GetAll() (groups []*Group, err error) {
-	if err = tool.MysqlDb.Model(&g).Find(&groups).Error; err != nil {
+
+	tx := tool.MysqlDb.Model(&g)
+	if g.Id > 0 {
+		tx = tx.Where("id", g.Id)
+	}
+	if g.PermissionId > 0 {
+		tx = tx.Where("permission_id", g.PermissionId)
+	}
+	if err = tx.Find(&groups).Error; err != nil {
 		return nil, err
 	}
 
 	return
+}
+
+func (g *Group) Get() (err error) {
+
+	tx := tool.MysqlDb.Model(&g)
+	if g.Id > 0 {
+		tx = tx.Where("id", g.Id)
+	}
+
+	return tx.Find(&g).Error
 }

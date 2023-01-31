@@ -6,7 +6,7 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-const GroupCacheKey = "group_list_gache"
+const GroupCacheKey = "group_list_cache"
 
 func Group() (map[int]string, error) {
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"game.sdk.center/internal/mapping"
 	"game.sdk.center/internal/model/common"
 	"game.sdk.center/internal/model/system"
@@ -103,12 +104,15 @@ func (g ServiceGroup) SetRouterCache() error {
 		return errors.New("角色Id无效")
 	}
 
+	if err := g.Group.Get(); err != nil {
+		return err
+	}
+
 	if g.PermissionId <= 0 {
 		return errors.New("权限Id无效")
 	}
 
 	var permission system.Permission
-
 	permission.Id = g.PermissionId
 	if err := permission.Get(); err != nil {
 		return err
@@ -120,7 +124,11 @@ func (g ServiceGroup) SetRouterCache() error {
 	}
 
 	for _, v := range router {
-		tool.RedisClient.HSet(context.Background(), "menu_router:"+g.Flag, v, 1, -1)
+		go func(route string) {
+			if err := tool.RedisClient.HSet(context.Background(), "menu_router:"+g.Flag, route, 1).Err(); err != nil {
+				fmt.Println(err)
+			}
+		}(v)
 	}
 
 	return nil

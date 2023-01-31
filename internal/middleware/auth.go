@@ -26,7 +26,7 @@ func Auth(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	user := system.NewUser()
+	user := system.NewTokenInfo()
 	if err = json.Unmarshal([]byte(result), &user); err != nil {
 		response.SetResult(5000, err.Error(), nil)
 		c.Abort()
@@ -47,7 +47,7 @@ func Auth(c *gin.Context) {
 
 	c.Set("userId", user.Id)
 	c.Set("groupId", user.GroupId)
-	c.Set("groupName", user.GroupId)
+	c.Set("groupName", user.GroupName)
 	c.Set("userAccount", user.Account)
 	c.Set("userInfo", user)
 
