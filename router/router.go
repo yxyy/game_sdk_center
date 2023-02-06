@@ -33,6 +33,9 @@ func InitRouter() *gin.Engine {
 	// 加载系统路由
 	InitSystemRouter(r)
 
+	// 公共路由
+	InitCommonRouter(r)
+
 	// 加载运营路由
 	InitBasicsRouter(r)
 

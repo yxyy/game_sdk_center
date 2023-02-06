@@ -2,13 +2,13 @@ package company
 
 import (
 	"game.sdk.center/internal/model/common"
-	"game.sdk.center/internal/services/company"
+	"game.sdk.center/internal/services/basics"
 	"github.com/gin-gonic/gin"
 )
 
 func List(c *gin.Context) {
 	response := common.NewResponse(c)
-	serviceCompany := company.NewServiceCompany()
+	serviceCompany := basics.NewServiceCompany()
 	params := common.NewParams()
 
 	if err := c.ShouldBind(&serviceCompany); err != nil {
@@ -33,7 +33,7 @@ func List(c *gin.Context) {
 
 func Create(c *gin.Context) {
 	response := common.NewResponse(c)
-	serviceCompany := company.NewServiceCompany()
+	serviceCompany := basics.NewServiceCompany()
 
 	if err := c.ShouldBind(&serviceCompany); err != nil {
 		response.Error(err)
@@ -48,7 +48,7 @@ func Create(c *gin.Context) {
 
 func Update(c *gin.Context) {
 	response := common.NewResponse(c)
-	serviceCompany := company.NewServiceCompany()
+	serviceCompany := basics.NewServiceCompany()
 
 	if err := c.ShouldBind(&serviceCompany); err != nil {
 		response.Error(err)
@@ -59,4 +59,20 @@ func Update(c *gin.Context) {
 	}
 
 	response.Success()
+}
+
+func Lists(c *gin.Context) {
+	response := common.NewResponse(c)
+	serviceCompany := basics.NewServiceCompany()
+
+	if err := c.ShouldBind(&serviceCompany); err != nil {
+		response.Error(err)
+	}
+
+	data, err := serviceCompany.Lists()
+	if err != nil {
+		response.Error(err)
+	}
+
+	response.SuccessData(data)
 }

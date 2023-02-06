@@ -23,7 +23,6 @@ func InitSystemRouter(r *gin.Engine) {
 		system.POST("/group/create", group.Create)
 		system.POST("/group/update", group.Update)
 		system.GET("/group/list", group.List)
-		system.GET("/group/lists", group.Lists)
 		system.POST("/group/permission", group.Permission)
 
 		// 菜单
@@ -36,7 +35,7 @@ func InitSystemRouter(r *gin.Engine) {
 		system.POST("/permission/create", permission.Create)
 		system.POST("/permission/update", permission.Update)
 		system.GET("/permission/list", permission.List)
-		system.GET("/permission/lists", permission.Lists)
+
 	}
 
 }

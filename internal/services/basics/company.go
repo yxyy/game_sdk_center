@@ -1,4 +1,4 @@
-package company
+package basics
 
 import (
 	"errors"
@@ -51,4 +51,10 @@ func (c ServiceCompany) Update() error {
 	}
 
 	return c.Company.Update()
+}
+
+func (c ServiceCompany) Lists() (sc []*basics.Company, err error) {
+
+	return c.Company.GetAll()
+
 }

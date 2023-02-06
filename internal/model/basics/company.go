@@ -7,9 +7,9 @@ import (
 
 type Company struct {
 	common.Model
-	Name    string `json:"name"`
-	Address string `json:"address"`
-	Phone   int    `json:"phone"`
+	Name    string `json:"name" form:"name"`
+	Address string `json:"address,omitempty"`
+	Phone   int    `json:"phone,omitempty"`
 }
 
 func (c Company) Create() error {
@@ -37,4 +37,9 @@ func (c Company) List(params common.Params) (companys []*Company, total int64, e
 
 	return
 
+}
+
+func (c Company) GetAll() (companys []*Company, err error) {
+	err = tool.MysqlDb.Model(&c).Select("id,name").Find(&companys).Error
+	return
 }
