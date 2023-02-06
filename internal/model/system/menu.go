@@ -34,19 +34,7 @@ type MenuTree struct {
 
 func (m Menu) Create() error {
 
-	// if err := tool.MysqlDb.Model(m).Where("name", m.Name).First(&Menu{}).Error; err == nil {
-	// 	return errors.New("标识已存在")
-	// }
-	//
-	// if err := tool.MysqlDb.Model(m).Where("component", m.Component).First(&Menu{}).Error; err == nil {
-	// 	return errors.New("组件已存在")
-	// }
-
-	if err := tool.MysqlDb.Model(m).Create(m).Error; err != nil {
-		return err
-	}
-
-	return nil
+	return tool.MysqlDb.Model(&m).Create(&m).Error
 }
 
 func (m Menu) Update() error {
