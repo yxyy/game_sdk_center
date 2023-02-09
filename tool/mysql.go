@@ -24,12 +24,13 @@ type MysqlConfig struct {
 func InitMysql() (err error) {
 	MysqlDb, err = gorm.Open(mysql.Open(getDsn()), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   "lhc_",
+			TablePrefix:   "lhc_", // 表前缀
 			SingularTable: false,
 			NameReplacer:  nil,
 			NoLowerCase:   false,
 		},
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger:                   logger.Default.LogMode(logger.Info), // 日志等级
+		DisableNestedTransaction: true,                                // 禁止自动创建外键
 	})
 	if err != nil {
 		return err

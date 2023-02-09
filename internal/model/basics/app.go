@@ -9,28 +9,29 @@ type App struct {
 	common.Model
 	Name      string `json:"name" form:"name"`
 	CompanyId int    `json:"company_id"`
-	Alias     int    `json:"alias"`
+	Alias     string `json:"alias"`
 	Remark    string `json:"remark"`
+	Type      int    `json:"type"`
 }
 
-func (c App) Create() error {
-	return tool.MysqlDb.Model(&c).Create(&c).Error
+func (a App) Create() error {
+	return tool.MysqlDb.Model(&a).Create(&a).Error
 }
 
-func (c App) Update() error {
-	return tool.MysqlDb.Model(&c).Where("id", c.Id).Updates(&c).Error
+func (a App) Update() error {
+	return tool.MysqlDb.Model(&a).Where("id", a.Id).Updates(&a).Error
 }
 
-func (c App) List(params common.Params) (companys []*App, total int64, err error) {
-	tx := tool.MysqlDb.Model(&c)
-	if c.Id > 0 {
-		tx = tx.Where("id", c.Id)
+func (a App) List(params common.Params) (companys []*App, total int64, err error) {
+	tx := tool.MysqlDb.Model(&a)
+	if a.Id > 0 {
+		tx = tx.Where("id", a.Id)
 	}
-	if c.CompanyId > 0 {
-		tx = tx.Where("company_id", c.CompanyId)
+	if a.CompanyId > 0 {
+		tx = tx.Where("company_id", a.CompanyId)
 	}
-	if c.Name != "" {
-		tx = tx.Where("name like ?", c.Name+"%")
+	if a.Name != "" {
+		tx = tx.Where("name like ?", a.Name+"%")
 	}
 
 	if err = tx.Count(&total).Error; err != nil {
@@ -41,4 +42,10 @@ func (c App) List(params common.Params) (companys []*App, total int64, err error
 
 	return
 
+}
+
+func (a App) GetAll() (app []*App, err error) {
+
+	err = tool.MysqlDb.Model(&a).Find(&app).Error
+	return
 }

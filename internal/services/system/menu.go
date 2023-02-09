@@ -118,9 +118,10 @@ func (m ServicesMenu) GetTree() (trees []*system.MenuTree, err error) {
 
 func tree(menus []*system.Menu, pid int) []*system.MenuTree {
 	var Trees []*system.MenuTree
+
 	for _, v := range menus {
 		if v.Parent == pid {
-			if v.Component[0] != '/' {
+			if len(v.Component) >= 1 && v.Component[0] != '/' {
 				v.Component = "/" + v.Component
 			}
 			menuTree := &system.MenuTree{

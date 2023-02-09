@@ -1,4 +1,4 @@
-package app
+package app_type
 
 import (
 	"game.sdk.center/internal/model/common"
@@ -8,7 +8,7 @@ import (
 
 func List(c *gin.Context) {
 	response := common.NewResponse(c)
-	app := basics.NewServiceApp()
+	app := basics.NewServiceAppType()
 	params := common.NewParams()
 
 	if err := c.ShouldBind(&app); err != nil {
@@ -33,7 +33,7 @@ func List(c *gin.Context) {
 
 func Create(c *gin.Context) {
 	response := common.NewResponse(c)
-	app := basics.NewServiceApp()
+	app := basics.NewServiceAppType()
 
 	if err := c.ShouldBind(&app); err != nil {
 		response.Error(err)
@@ -49,7 +49,7 @@ func Create(c *gin.Context) {
 
 func Update(c *gin.Context) {
 	response := common.NewResponse(c)
-	app := basics.NewServiceApp()
+	app := basics.NewServiceAppType()
 
 	if err := c.ShouldBind(&app); err != nil {
 		response.Error(err)
@@ -65,7 +65,7 @@ func Update(c *gin.Context) {
 
 func Lists(c *gin.Context) {
 	response := common.NewResponse(c)
-	app := basics.NewServiceApp()
+	app := basics.NewServiceAppType()
 
 	if err := c.ShouldBind(&app); err != nil {
 		response.Error(err)
