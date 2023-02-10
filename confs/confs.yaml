@@ -38,3 +38,7 @@ redisPoll:
       user: root
       password: 123456
       db: 2
+
+oss:
+  host: http://127.0.0.1
+  images: storage/uploads/images
