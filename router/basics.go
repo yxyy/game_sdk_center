@@ -3,6 +3,7 @@ package router
 import (
 	"game.sdk.center/internal/controller/basics/app"
 	"game.sdk.center/internal/controller/basics/app_type"
+	"game.sdk.center/internal/controller/basics/channel"
 	"game.sdk.center/internal/controller/basics/company"
 	"game.sdk.center/internal/controller/basics/game"
 	"github.com/gin-gonic/gin"
@@ -31,5 +32,10 @@ func InitBasicsRouter(r *gin.Engine) {
 		basics.POST("/game/create", game.Create)
 		basics.POST("/game/update", game.Update)
 		basics.GET("/game/list", game.List)
+
+		// 游戏
+		basics.POST("/channel/create", channel.Create)
+		basics.POST("/channel/update", channel.Update)
+		basics.GET("/channel/list", channel.List)
 	}
 }

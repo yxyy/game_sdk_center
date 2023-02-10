@@ -3,7 +3,9 @@ package router
 import (
 	"game.sdk.center/internal/controller/basics/app"
 	"game.sdk.center/internal/controller/basics/app_type"
+	"game.sdk.center/internal/controller/basics/channel"
 	"game.sdk.center/internal/controller/basics/company"
+	"game.sdk.center/internal/controller/basics/game"
 	"game.sdk.center/internal/controller/common/images"
 	"game.sdk.center/internal/controller/system/group"
 	"game.sdk.center/internal/controller/system/permission"
@@ -20,9 +22,11 @@ func InitCommonRouter(r *gin.Engine) {
 		common.GET("/app_type", app_type.Lists)
 		// 应用下拉
 		common.GET("/app", app.Lists)
-
 		// 游戏下拉
-		common.GET("/game", app_type.List)
+		common.GET("/game", game.Lists)
+		// 渠道
+		common.GET("/channel", channel.Lists)
+
 		// 账号分组
 		common.GET("/group", group.Lists)
 		// 权限

@@ -21,6 +21,7 @@ func InitRouter() *gin.Engine {
 	r.POST("/system/login", system.Login)
 
 	r.Use(middleware.Auth)
+	r.Use(middleware.DbLog)
 	r.Use(middleware.Menu)
 
 	r.POST("/system/logout", system.Logout)
