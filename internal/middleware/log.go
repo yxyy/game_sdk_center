@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"game.sdk.center/internal/model/system"
 	"game.sdk.center/tool"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -77,6 +78,24 @@ func Log(c *gin.Context) {
 			})
 		}
 		logger.Info("请求日志")
+	}()
+
+	c.Next()
+
+}
+
+func DbLog(c *gin.Context) {
+	// 操作日志入库
+	go func() {
+		logs := system.Log{
+			Ip:        c.ClientIP(),
+			Path:      fmt.Sprint(c.Request.URL),
+			OptUser:   c.GetInt("userId"),
+			RequestId: c.GetString("request_id"),
+		}
+		if err := logs.Create(); err != nil {
+			log.Error(err)
+		}
 	}()
 
 	c.Next()
