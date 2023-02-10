@@ -10,6 +10,7 @@ type Game struct {
 	Name            string `json:"name" form:"name"`
 	Alias           string `json:"alias"`
 	AppId           int    `json:"app_id"`
+	Icon            string `json:"icon"`
 	Os              int    `json:"os"`
 	Status          int    `json:"status"`
 	Version         string `json:"version"`

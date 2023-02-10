@@ -7,14 +7,15 @@ import (
 	"game.sdk.center/internal/model/common"
 	"game.sdk.center/internal/services/conmon"
 	"game.sdk.center/tool"
+	"github.com/spf13/viper"
 )
 
 type ServiceGame struct {
 	basics.GameInfo
 	conmon.Format
-	GameName    string `json:"game_name"`
-	TypeName    string `json:"type_name"`
-	CompanyName string `json:"company_name"`
+	GameName   string `json:"game_name"`
+	TypeName   string `json:"type_name"`
+	IconFormat string `json:"icon_format"`
 }
 
 type ServiceGameInfo struct {
@@ -42,15 +43,19 @@ func (g ServiceGame) List(params common.Params) (sc []*ServiceGame, total int64,
 		return nil, 0, err
 	}
 
+	ossDomain := viper.GetString("oss.host")
 	for _, v := range list {
 		format := conmon.Formats(v.Model)
 		format.OptUserName = userMap[v.OptUser]
-		serviceGame := &ServiceGame{
-			GameInfo: *v,
-			Format:   format,
-			TypeName: appType[v.AppType],
+		if len(v.Icon) > 0 && v.Icon[0] != '/' {
+			v.Icon = "/" + v.Icon
 		}
-
+		serviceGame := &ServiceGame{
+			GameInfo:   *v,
+			Format:     format,
+			TypeName:   appType[v.AppType],
+			IconFormat: ossDomain + v.Icon,
+		}
 		sc = append(sc, serviceGame)
 	}
 
@@ -77,6 +82,15 @@ func (g ServiceGame) Create() error {
 	if g.CallbackUrl == "" {
 		return errors.New("回调地址不能为空")
 	}
+	if err := conmon.ParseUrl(g.CallbackUrl); err != nil {
+		return errors.New("回调地址：" + err.Error())
+	}
+
+	if g.CallBackTestUrl != "" {
+		if err := conmon.ParseUrl(g.CallBackTestUrl); err != nil {
+			return errors.New("测试回调地址：" + err.Error())
+		}
+	}
 
 	g.ClientKey = tool.Salt()
 	g.ServerKey = tool.Salt()
@@ -88,6 +102,22 @@ func (g ServiceGame) Update() error {
 	if g.Id <= 0 {
 		return errors.New("id无效")
 	}
+
+	if g.CallbackUrl != "" {
+		if err := conmon.ParseUrl(g.CallbackUrl); err != nil {
+			return errors.New("回调地址：" + err.Error())
+		}
+	}
+
+	if g.CallBackTestUrl != "" {
+		if err := conmon.ParseUrl(g.CallBackTestUrl); err != nil {
+			return errors.New("测试回调地址：" + err.Error())
+		}
+	}
+
+	// 不更新key
+	g.ClientKey = ""
+	g.ServerKey = ""
 
 	return g.Game.Update()
 }

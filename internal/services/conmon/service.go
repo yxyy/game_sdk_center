@@ -1,7 +1,9 @@
 package conmon
 
 import (
+	"errors"
 	"game.sdk.center/internal/model/common"
+	"net/url"
 	"time"
 )
 
@@ -40,4 +42,22 @@ func Formats(model common.Model) (format Format) {
 	// }
 
 	return format
+}
+
+func ParseUrl(urls string) error {
+
+	uri, err := url.ParseRequestURI(urls)
+	if err != nil {
+		return err
+	}
+
+	if uri.Scheme != "http" && uri.Scheme != "https" {
+		return errors.New("协议错误")
+	}
+
+	if uri.Host == "" {
+		return errors.New("域名错误")
+	}
+
+	return nil
 }

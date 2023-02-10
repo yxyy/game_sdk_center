@@ -12,14 +12,18 @@ func InitRouter() *gin.Engine {
 
 	r := gin.Default()
 
+	// 设置静态资源
+	r.StaticFS("/storage/uploads", http.Dir("./storage/uploads"))
+
 	r.Use(middleware.Log)
 	// r.Use(middleware.Auto)
 
 	r.POST("/system/login", system.Login)
-	r.POST("/system/logout", system.Logout)
 
 	r.Use(middleware.Auth)
 	r.Use(middleware.Menu)
+
+	r.POST("/system/logout", system.Logout)
 
 	r.GET("/home", func(c *gin.Context) {
 

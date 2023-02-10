@@ -4,6 +4,7 @@ import (
 	"game.sdk.center/internal/controller/basics/app"
 	"game.sdk.center/internal/controller/basics/app_type"
 	"game.sdk.center/internal/controller/basics/company"
+	"game.sdk.center/internal/controller/common/images"
 	"game.sdk.center/internal/controller/system/group"
 	"game.sdk.center/internal/controller/system/permission"
 	"github.com/gin-gonic/gin"
@@ -26,5 +27,10 @@ func InitCommonRouter(r *gin.Engine) {
 		common.GET("/group", group.Lists)
 		// 权限
 		common.GET("/permission", permission.Lists)
+	}
+
+	uploads := r.Group("uploads")
+	{
+		uploads.POST("/images", images.Uploads)
 	}
 }
