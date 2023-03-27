@@ -1,10 +1,10 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 海外国内测试服
+ Source Server         :
  Source Server Type    : MySQL
  Source Server Version : 50740
- Source Host           : 47.115.132.70:3306
+ Source Host           :
  Source Schema         : game_sdk_center
 
  Target Server Type    : MySQL
