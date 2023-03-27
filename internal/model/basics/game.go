@@ -62,8 +62,8 @@ func (g Game) List(params common.Params) (games []*GameInfo, total int64, err er
 
 }
 
-func (g Game) GetAll() (app []*App, err error) {
+func (g Game) GetAll() (game []*Game, err error) {
 
-	err = tool.MysqlDb.Model(&g).Find(&app).Error
+	err = tool.MysqlDb.Model(&g).Find(&game).Error
 	return
 }

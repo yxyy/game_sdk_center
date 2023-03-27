@@ -122,7 +122,7 @@ func (g ServiceGame) Update() error {
 	return g.Game.Update()
 }
 
-func (g ServiceGame) Lists() (sc []*basics.App, err error) {
+func (g ServiceGame) Lists() (sc []*basics.Game, err error) {
 
 	return g.Game.GetAll()
 }
